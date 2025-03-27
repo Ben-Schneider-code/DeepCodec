@@ -34,7 +34,6 @@ def get_stats(video_path):
         'start': start_pts,
         'end': end_pts,
         'num_frames': num_frames,
-        'duration': round(total_duration/num_packet),
     }
 
 def compute_parellelized_intervals(video_path: str, width: int = -1, height: int = 1, num_threads: int = 1):
