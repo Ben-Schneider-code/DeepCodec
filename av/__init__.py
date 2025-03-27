@@ -26,6 +26,7 @@ from av.video.codeccontext import VideoCodecContext
 from av.video.format import VideoFormat
 from av.video.frame import VideoFrame
 from av.video.stream import VideoStream
+from av.vfast import get_stats, compute_parellelized_intervals
 
 __all__ = (
     "__version__",

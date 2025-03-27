@@ -16,6 +16,10 @@ build:
 	$(PIP) install -U cython setuptools
 	CFLAGS=$(CFLAGS) LDFLAGS=$(LDFLAGS) $(PYTHON) setup.py build_ext --inplace --debug
 
+release:
+	$(PIP) install -U cython setuptools
+	CFLAGS=$(CFLAGS) LDFLAGS=$(LDFLAGS) $(PYTHON) setup.py sdist bdist_wheel
+
 clean:
 	- find av -name '*.so' -delete
 	- rm -rf build
