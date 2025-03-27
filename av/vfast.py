@@ -13,16 +13,11 @@ def get_stats(video_path):
     end_pts = -1
     start_pts = float('inf')
 
-    num_packet = 0
-    total_duration = 0
-
     for packet in container.demux():
         if packet.stream.type == 'video':
             if packet.pts is None:
                 continue
-            
-            total_duration += packet.duration
-            num_packet += 1
+
 
             if packet.pts > end_pts:
                 end_pts = packet.pts
@@ -73,19 +68,9 @@ def compute_parellelized_intervals(video_path: str, width: int = -1, height: int
 
     return s
 
-def estimate_frame_location(pts: int, pts_start: int, pts_end: int,duration: int, num_frames: int)-> int:
+def estimate_frame_location(pts: int, pts_start: int, pts_end: int, num_frames: int)-> int:
     """
     Convert the pts of a frame to its index location.
     """
-    return round((num_frames-1)*(pts / (pts_end-pts_start)))
-    #return max(0, round(num_frames*((pts-duration*0.5) / (pts_end-pts_start))))
-
-# def estimate_frame_location(pts: int, pts_start: int, pts_end: int, num_frames: int) -> int:
-#     total_duration = pts_end - pts_start
-#     if total_duration <= 0:
-#         return 0
-#     per_frame = total_duration / num_frames
-#     print(per_frame)
-#     adjusted_pts = pts - pts_start - per_frame * 0.5
-#     index = round(adjusted_pts / per_frame)
-#     return max(0, min(index, num_frames - 1))
+    return round((num_frames-1)* pts / (pts_end-pts_start))
+    #return ((num_frames-1)*(pts) //  (pts_end-pts_start))

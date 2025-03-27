@@ -15,7 +15,7 @@ def main(test_video):
         
         pts = frame.pts
 
-        est_loc = estimate_frame_location(pts, out['start'], out['end'], out["duration"], out['num_frames'])
+        est_loc = estimate_frame_location(pts, out['start'], out['end'], out['num_frames'])
         if (not (est_loc == real_loc)):
             print(f"Was off by {est_loc-real_loc} correct was {real_loc} estimated was {-1} after rnd it was {est_loc}")
             fails.append(1)
