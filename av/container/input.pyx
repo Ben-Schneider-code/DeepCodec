@@ -20,7 +20,6 @@ cdef close_input(InputContainer self):
             lib.avformat_close_input(&self.ptr)
         self.input_was_opened = False
 
-
 cdef class InputContainer(Container):
     def __cinit__(self, *args, **kwargs):
         cdef CodecContext py_codec_context

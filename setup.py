@@ -7,7 +7,7 @@ import shlex
 import subprocess
 import sys
 from time import sleep
-
+import numpy
 
 def is_virtualenv():
     return sys.base_prefix != sys.prefix
@@ -221,7 +221,7 @@ for dirname, dirnames, filenames in os.walk("av"):
         ext_modules += cythonize(
             Extension(
                 mod_name,
-                include_dirs=extension_extra["include_dirs"],
+                include_dirs=extension_extra["include_dirs"]+[numpy.get_include()],
                 libraries=extension_extra["libraries"],
                 library_dirs=extension_extra["library_dirs"],
                 sources=[pyx_path],

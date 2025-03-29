@@ -1,4 +1,5 @@
 from cython.operator cimport dereference
+cimport numpy as cnp
 from libc.stdint cimport int64_t
 
 import os
@@ -23,6 +24,18 @@ from av.logging import Capture as LogCapture
 
 cdef object _cinit_sentinel = object()
 
+def parallel_open(
+    file,
+    cnp.ndarray[cnp.int64_t, ndim=2] intervals,
+    dict[int, int] frames_to_save,
+    int height,
+    int width,
+    int num_frames,
+    int min_pts,
+    int max_pts
+):
+    cdef int num_threads = intervals.shape[0]
+    print(num_threads)
 
 # We want to use the monotonic clock if it is available.
 cdef object clock = getattr(time, "monotonic", time.time)
@@ -331,6 +344,8 @@ cdef class Container:
         self._assert_open()
         self.ptr.flags = value
 
+
+
 def open(
     file,
     mode=None,
@@ -390,7 +405,19 @@ def open(
 
     More information on using input and output devices is available on the
     `FFmpeg website <https://www.ffmpeg.org/ffmpeg-devices.html>`_.
-    """
+    """ 
+    # print(file)
+    # print(mode)
+    # print(format)
+    # print(options)
+    # print(container_options)
+    # print(stream_options)
+    # print(metadata_encoding)
+    # print(metadata_errors)
+    # print(buffer_size)
+    # print(timeout)
+    # print(io_open)
+    # print(hwaccel)
 
     if not (mode is None or (isinstance(mode, str) and mode == "r" or mode == "w")):
         raise ValueError(f"mode must be 'r', 'w', or None, got: {mode}")

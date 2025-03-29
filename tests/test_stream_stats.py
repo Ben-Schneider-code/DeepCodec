@@ -6,7 +6,7 @@ def main(test_video):
     # s = time.time()
     out = av.get_stats(test_video)
     # e = time.time()
-
+    exit()
     container = av.open(test_video)
 
     fails = []
