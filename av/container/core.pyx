@@ -35,7 +35,15 @@ cdef inline int estimate_frame_location(int pts, int pts_start, int pts_end, int
     # be careful about overflows here
     return round((num_frames - 1) * (pts / (pts_end - pts_start)))
 
-cpdef parallel_open(
+
+def check_object_type(obj):
+    if isinstance(obj, InputContainer):
+        return "Cython extension type"
+    else:
+        return "General Python object"
+
+
+cpdef void parallel_open(
     file,
     cnp.ndarray[cnp.int64_t, ndim=2] intervals,
     dict[int, int] frames_to_save,
@@ -46,44 +54,43 @@ cpdef parallel_open(
     int max_pts
 ):
     cdef int num_threads = intervals.shape[0]
-    cdef list container_list
+    cdef char **array = <char**>malloc(n * sizeof(char*))    
+    cdef InputContainer dummyContainer = open(file)
     cdef cnp.ndarray[cnp.npy_bool, ndim=1] frame_check = np.zeros(num_frames, dtype=np.bool_)
 
     cdef int frame_count = 0
-    cdef InputContainer container = open(file)
-    cdef PyObject **c_array = <PyObject **>malloc(n * sizeof(PyObject*))
+    cdef InputContainer container
+    print("hello")
+#   for i in range(num_threads):
+#        container = open(file)
+#        seek_stream = container.streams.video[0]
+#        pts_start = intervals[i,0]
+#        pts_end = intervals[i,1]
+#        container.seek(pts_start+1, stream = seek_stream)
+#        container_list[i] = container
+#
+        
 
-    for i in range(num_threads):
-        container_list[i] = open(file)
+    #for thread_idx in prange(num_threads, nogil=True):
+        #con = container_list[thread_idx]
 
-    for i in range(num_threads):
-        c_array[i] = <PyObject *>container_list[i]
+        #for frame in con.decode(video=0):            
+        #    if frame.pts < pts_start:
+        #        continue
 
-    with nogil:
-        for thread_idx in prange(num_threads, nogil=True):
-            #container = <InputContainer>c_array[thread_idx]
-            #seek_stream = container.streams.video[0]
-            #pts_start = intervals[thread_idx,0]
-            #pts_end = intervals[thread_idx,1]
-            container.cseek(0)
+            # if the container is for the end of the stream
+            # break using the iterator to ensure the last frame is returned
+        #    if frame.pts >= pts_end and thread_idx != num_threads-1:
+        #        break
+            
+        #    frame_location = estimate_frame_location(frame.pts, min_pts, max_pts, num_frames)
 
-            #for frame in container.decode(video=0):            
-            #    if frame.pts < pts_start:
-            #        continue
-
-                # if the container is for the end of the stream
-                # break using the iterator to ensure the last frame is returned
-            #    if frame.pts >= pts_end and thread_idx != num_threads-1:
-            #        break
-                
-            #    frame_location = estimate_frame_location(frame.pts, min_pts, max_pts, num_frames)
-            #    frame_count += 1
-                #frame_check[frame_location] = True
+            # this could race condition
+        #    frame_count += 1
+            #frame_check[frame_location] = True
 
 
-    print("TOTAL FRAMES IN LOOP: ")
-    print(frame_count)
-    return frame_check
+ 
 
 # We want to use the monotonic clock if it is available.
 cdef object clock = getattr(time, "monotonic", time.time)
@@ -392,8 +399,6 @@ cdef class Container:
         self._assert_open()
         self.ptr.flags = value
 
-
-
 def open(
     file,
     mode=None,
@@ -454,18 +459,6 @@ def open(
     More information on using input and output devices is available on the
     `FFmpeg website <https://www.ffmpeg.org/ffmpeg-devices.html>`_.
     """ 
-    # print(file)
-    # print(mode)
-    # print(format)
-    # print(options)
-    # print(container_options)
-    # print(stream_options)
-    # print(metadata_encoding)
-    # print(metadata_errors)
-    # print(buffer_size)
-    # print(timeout)
-    # print(io_open)
-    # print(hwaccel)
 
     if not (mode is None or (isinstance(mode, str) and mode == "r" or mode == "w")):
         raise ValueError(f"mode must be 'r', 'w', or None, got: {mode}")
@@ -490,6 +483,19 @@ def open(
         read_timeout = timeout
 
     if mode.startswith("r"):
+        #print(file)
+        #print(format)
+        #print(options)
+        #print(container_options)
+        #print(stream_options)
+        #print(hwaccel)
+        #print(metadata_encoding)
+        #print(metadata_errors)
+        #print(buffer_size)
+        #print(open_timeout)
+        #print(read_timeout)
+        #print(io_open)
+        #exit()
         return InputContainer(_cinit_sentinel, file, format, options,
             container_options, stream_options, hwaccel, metadata_encoding, metadata_errors,
             buffer_size, open_timeout, read_timeout, io_open,

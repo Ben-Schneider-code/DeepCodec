@@ -4,10 +4,9 @@ import time
 
 def main(video_path):
     s = time.time()
-    arr = vfast_load(video_path, num_threads=8)
+    vfast_load(video_path, num_threads=8)
     e = time.time()
-    print(type(arr))
-    print(np.all(arr, axis=0))
+    
     print(f"Timing was: {e-s}")
 
 if __name__ == "__main__":

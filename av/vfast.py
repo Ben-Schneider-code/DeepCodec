@@ -9,7 +9,9 @@ def vfast_load(video_path, batch_idx: dict | None = None,  width=-1, height=-1, 
     if batch_idx is None:
         batch_idx = {y:x for (x,y) in enumerate(range(metadata["num_frames"]))}
                                                 
-    return parallel_open(video_path, intervals, batch_idx, height, width, metadata["num_frames"], metadata["start"], metadata["end"])
+    print("start")
+    parallel_open(video_path, intervals, batch_idx, height, width, metadata["num_frames"], metadata["start"], metadata["end"])
+    print("done")
     
 
 def get_stats(video_path):
