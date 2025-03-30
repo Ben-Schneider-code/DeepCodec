@@ -5,14 +5,12 @@ import numpy as np
 
 def vfast_load(video_path, batch_idx: dict | None = None,  width=-1, height=-1, num_threads=1):
 
-     
-
     intervals, metadata = compute_parellelized_intervals(video_path, num_threads)
     if batch_idx is None:
-        batch_idx = {i:i for i in range(metadata["num_frames"])}
+        batch_idx = {y:x for (x,y) in enumerate(range(metadata["num_frames"]))}
                                                 
-    parallel_open(video_path, intervals, batch_idx, height, width, metadata["num_frames"], metadata["start"], metadata["end"])
-
+    return parallel_open(video_path, intervals, batch_idx, height, width, metadata["num_frames"], metadata["start"], metadata["end"])
+    
 
 def get_stats(video_path):
     container = open(video_path)
@@ -81,4 +79,3 @@ def estimate_frame_location(pts: int, pts_start: int, pts_end: int, num_frames: 
     Convert the pts of a frame to its index location.
     """
     return round((num_frames-1)* pts / (pts_end-pts_start))
-    #return ((num_frames-1)*(pts) //  (pts_end-pts_start))

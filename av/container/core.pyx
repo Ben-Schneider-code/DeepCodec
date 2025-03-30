@@ -1,7 +1,8 @@
 from cython.operator cimport dereference
+import numpy as np
 cimport numpy as cnp
 from libc.stdint cimport int64_t
-
+from cython.parallel import prange
 import os
 import time
 from enum import Flag, IntEnum
@@ -20,11 +21,21 @@ from av.utils cimport avdict_to_dict
 
 from av.dictionary import Dictionary
 from av.logging import Capture as LogCapture
+from libc.stdlib cimport malloc, free
+from cpython.ref cimport PyObject
 
 
 cdef object _cinit_sentinel = object()
 
-def parallel_open(
+cdef inline int estimate_frame_location(int pts, int pts_start, int pts_end, int num_frames) noexcept:
+    """
+    Convert the pts of a frame to its index location.
+    """
+    
+    # be careful about overflows here
+    return round((num_frames - 1) * (pts / (pts_end - pts_start)))
+
+cpdef parallel_open(
     file,
     cnp.ndarray[cnp.int64_t, ndim=2] intervals,
     dict[int, int] frames_to_save,
@@ -35,7 +46,44 @@ def parallel_open(
     int max_pts
 ):
     cdef int num_threads = intervals.shape[0]
-    print(num_threads)
+    cdef list container_list
+    cdef cnp.ndarray[cnp.npy_bool, ndim=1] frame_check = np.zeros(num_frames, dtype=np.bool_)
+
+    cdef int frame_count = 0
+    cdef InputContainer container = open(file)
+    cdef PyObject **c_array = <PyObject **>malloc(n * sizeof(PyObject*))
+
+    for i in range(num_threads):
+        container_list[i] = open(file)
+
+    for i in range(num_threads):
+        c_array[i] = <PyObject *>container_list[i]
+
+    with nogil:
+        for thread_idx in prange(num_threads, nogil=True):
+            #container = <InputContainer>c_array[thread_idx]
+            #seek_stream = container.streams.video[0]
+            #pts_start = intervals[thread_idx,0]
+            #pts_end = intervals[thread_idx,1]
+            container.cseek(0)
+
+            #for frame in container.decode(video=0):            
+            #    if frame.pts < pts_start:
+            #        continue
+
+                # if the container is for the end of the stream
+                # break using the iterator to ensure the last frame is returned
+            #    if frame.pts >= pts_end and thread_idx != num_threads-1:
+            #        break
+                
+            #    frame_location = estimate_frame_location(frame.pts, min_pts, max_pts, num_frames)
+            #    frame_count += 1
+                #frame_check[frame_location] = True
+
+
+    print("TOTAL FRAMES IN LOOP: ")
+    print(frame_count)
+    return frame_check
 
 # We want to use the monotonic clock if it is available.
 cdef object clock = getattr(time, "monotonic", time.time)

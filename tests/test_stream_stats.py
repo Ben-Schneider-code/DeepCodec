@@ -6,7 +6,6 @@ def main(test_video):
     # s = time.time()
     out = av.get_stats(test_video)
     # e = time.time()
-    exit()
     container = av.open(test_video)
 
     fails = []
@@ -19,6 +18,8 @@ def main(test_video):
         if (not (est_loc == real_loc)):
             print(f"Was off by {est_loc-real_loc} correct was {real_loc} estimated was {-1} after rnd it was {est_loc}")
             fails.append(1)
+
+            
 
     print(f"total number of fails was: {len(fails)} out of {out["num_frames"]}")
 
