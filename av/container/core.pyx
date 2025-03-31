@@ -23,7 +23,7 @@ from av.dictionary import Dictionary
 from av.logging import Capture as LogCapture
 from libc.stdlib cimport malloc, free
 from cpython.ref cimport PyObject
-
+from av.video.format cimport VideoFormat
 
 cdef object _cinit_sentinel = object()
 
@@ -34,63 +34,59 @@ cdef inline int estimate_frame_location(int pts, int pts_start, int pts_end, int
     
     # be careful about overflows here
     return round((num_frames - 1) * (pts / (pts_end - pts_start)))
-
-
-def check_object_type(obj):
-    if isinstance(obj, InputContainer):
-        return "Cython extension type"
-    else:
-        return "General Python object"
-
-
-cpdef void parallel_open(
+    
+cpdef list parallel_open(
     file,
-    cnp.ndarray[cnp.int64_t, ndim=2] intervals,
     dict[int, int] frames_to_save,
+    int interval_min_pts,
+    int interval_max_pts,
+    int buffer_size,
     int height,
     int width,
     int num_frames,
-    int min_pts,
-    int max_pts
-):
-    cdef int num_threads = intervals.shape[0]
-    cdef char **array = <char**>malloc(n * sizeof(char*))    
-    cdef InputContainer dummyContainer = open(file)
-    cdef cnp.ndarray[cnp.npy_bool, ndim=1] frame_check = np.zeros(num_frames, dtype=np.bool_)
+    int rank,
+    int world_size,
+    int global_min_pts,
+    int global_max_pts
+):  
 
-    cdef int frame_count = 0
-    cdef InputContainer container
-    print("hello")
-#   for i in range(num_threads):
-#        container = open(file)
-#        seek_stream = container.streams.video[0]
-#        pts_start = intervals[i,0]
-#        pts_end = intervals[i,1]
-#        container.seek(pts_start+1, stream = seek_stream)
-#        container_list[i] = container
-#
+    print(f"rank: {rank} -- buffer size is {buffer_size}")
+
+    if buffer_size == 0:
+        return
+    #
+    # TODO: reset affintiy of process here
+    #
+    cdef InputContainer interval_container = open(file)
+
+    # allocate buffer
+    cdef cnp.ndarray[cnp.uint8_t, ndim=2] np_buffer = np.empty((buffer_size, 3, height, width), dtype=np.uint8)
+    cdef int buffer_idx = 0
+
+    #cdef VideoFormat output_format = VideoFormat('rgb24')
+
+    seek_stream = interval_container.streams.video[0]
+    interval_container.seek(interval_min_pts+1, stream = seek_stream)
+
+    for frame in interval_container.decode(video=0):            
+        if frame.pts < interval_min_pts:
+            continue
+
+        # if the container is for the end of the stream
+        # break using the iterator to ensure the last frame is returned
+        if frame.pts >= interval_max_pts and rank != world_size-1:
+            break
         
+        frame_location = estimate_frame_location(frame.pts, global_min_pts, global_max_pts, num_frames)
 
-    #for thread_idx in prange(num_threads, nogil=True):
-        #con = container_list[thread_idx]
+        # resize frame and add it to list
+        if frame_location in frames_to_save:
+            np_buffer[buffer_idx] = np.transpose(frame.to_ndarray(format='rgb24', width=width, height=height), (2, 0, 1))
+            buffer_idx += 1
 
-        #for frame in con.decode(video=0):            
-        #    if frame.pts < pts_start:
-        #        continue
+    assert(buffer_idx == buffer_size-1)
+    return np_buffer
 
-            # if the container is for the end of the stream
-            # break using the iterator to ensure the last frame is returned
-        #    if frame.pts >= pts_end and thread_idx != num_threads-1:
-        #        break
-            
-        #    frame_location = estimate_frame_location(frame.pts, min_pts, max_pts, num_frames)
-
-            # this could race condition
-        #    frame_count += 1
-            #frame_check[frame_location] = True
-
-
- 
 
 # We want to use the monotonic clock if it is available.
 cdef object clock = getattr(time, "monotonic", time.time)
@@ -483,19 +479,6 @@ def open(
         read_timeout = timeout
 
     if mode.startswith("r"):
-        #print(file)
-        #print(format)
-        #print(options)
-        #print(container_options)
-        #print(stream_options)
-        #print(hwaccel)
-        #print(metadata_encoding)
-        #print(metadata_errors)
-        #print(buffer_size)
-        #print(open_timeout)
-        #print(read_timeout)
-        #print(io_open)
-        #exit()
         return InputContainer(_cinit_sentinel, file, format, options,
             container_options, stream_options, hwaccel, metadata_encoding, metadata_errors,
             buffer_size, open_timeout, read_timeout, io_open,
