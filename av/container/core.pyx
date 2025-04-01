@@ -50,20 +50,11 @@ cpdef cnp.ndarray[cnp.uint8_t, ndim=4] parallel_open(
     int global_min_pts,
     int global_max_pts
 ):  
-    s = time.time()
-
-    if buffer_size == 0:
-        return
-    #
-    # TODO: reset affintiy of process here
-    #
     cdef InputContainer interval_container = open(file)
 
     # allocate buffer of shape B,C,H,W
     cdef cnp.ndarray[cnp.uint8_t, ndim=4] np_buffer = np.empty((buffer_size, 3, height, width), dtype=np.uint8)
     cdef int buffer_idx = 0
-
-    #cdef VideoFormat output_format = VideoFormat('rgb24')
 
     seek_stream = interval_container.streams.video[0]
     interval_container.seek(interval_min_pts+1, stream = seek_stream)
@@ -85,9 +76,6 @@ cpdef cnp.ndarray[cnp.uint8_t, ndim=4] parallel_open(
             buffer_idx += 1
 
     assert buffer_idx == buffer_size, f"rank: {rank} buffer_idx was {buffer_idx} and buffer_size was {buffer_size}"
-    
-    e = time.time()
-    print(f"Rank {rank} completed in {e-s} s")
     return np_buffer
 
 

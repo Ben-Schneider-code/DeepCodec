@@ -4,8 +4,12 @@ from typing import Set, Dict
 import numpy as np
 import multiprocessing as mp
 from concurrent.futures import ProcessPoolExecutor
+import os
 
 def wrap(inputs):
+    if inputs[4] == 0:
+        return None
+
     return parallel_open(*inputs)
 
 def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num_threads=1):

@@ -8,13 +8,13 @@ def main(video_path):
 
     indices = list(range(0,d["num_frames"], 25))
 
-    s = time.time()
-    # be careful about hitting swap memory
-    data = vfast_load(video_path, indices=indices, height=360, width=360, num_threads=4)
-    e = time.time()
+    for thread in [16,8,4,2]:
+        s = time.time()
+        data = vfast_load(video_path, indices=indices, height=360, width=360, num_threads=thread)
+        e = time.time()
+        print(f"Timing was: {e-s}")
+
     
-    print(data.shape)
-    print(f"Timing was: {e-s}")
 
 if __name__ == "__main__":
     from pathlib import Path
