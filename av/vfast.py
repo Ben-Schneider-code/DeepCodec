@@ -12,17 +12,12 @@ def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num
 
     assert height > 0, "currently we need these set up front to allocate the buffer"
     assert width > 0, "currently we need these set up front to allocate the buffer"
-
-    if indices is None:
-        indices = list(range(metadata["num_frames"]))
     
-
+    intervals, metadata, indices = compute_parellelized_intervals(video_path, indices, num_threads)
     batch_map = {y:x for (x,y) in enumerate(indices)}
 
-    intervals, metadata = compute_parellelized_intervals(video_path, indices, num_threads)
-
     # make this a fork
-    ctx = mp.get_context("spawn")
+    ctx = mp.get_context("fork")
 
     inputs, data = [],[]
 
@@ -30,9 +25,8 @@ def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num
         inputs.append((video_path, batch_map,x,y,buffer_size, height, width, metadata["num_frames"],rank, len(intervals), metadata["start"], metadata["end"]))
 
     with ProcessPoolExecutor(max_workers=len(intervals), mp_context=ctx) as executor:
-        data = [item for item in list(executor.map(wrap, inputs))]
+        data = list(executor.map(wrap, inputs))
 
-    exit()
     return np.concatenate(data, axis=0)
 
 def get_stats(video_path):
@@ -69,10 +63,13 @@ def get_stats(video_path):
         'num_frames': num_frames,
     }
 
-def compute_parellelized_intervals(video_path: str, indicies: list, num_threads: int = 1):
+def compute_parellelized_intervals(video_path: str, indicies: list | None, num_threads: int = 1):
 
     d: Dict = get_stats(video_path)
     assert type(num_threads) is int and num_threads > 0
+
+    if indicies is None:
+        indicies = list(range(d["num_frames"]))
 
     interval: float = (d["end"] - d["start"]) / num_threads
     kf: list = d["kf"]
@@ -94,11 +91,13 @@ def compute_parellelized_intervals(video_path: str, indicies: list, num_threads:
     s.add(d['end'])
     s = sorted(list(s))
 
+
+
     ret = []
     for i in range(len(s)-1):
 
-        start_frame = estimate_frame_location(s[i])
-        end_frame = estimate_frame_location(s[i+1])
+        start_frame = estimate_frame_location(s[i], d["start"], d["end"], d["num_frames"])
+        end_frame = estimate_frame_location(s[i+1], d["start"], d["end"], d["num_frames"])
 
         idx_start = bisect.bisect_left(indicies, start_frame)
         idx_end = bisect.bisect_left(indicies,end_frame)
@@ -109,10 +108,10 @@ def compute_parellelized_intervals(video_path: str, indicies: list, num_threads:
         if i == len(s)-2 and indicies[-1] == d["num_frames"]-1:
             buffer_size += 1
         
-        ret.append(s[i], s[i+1], buffer_size)
+        ret.append((s[i], s[i+1], buffer_size))
 
 
-    return ret, d
+    return ret, d, indicies
 
 def estimate_frame_location(pts: int, pts_start: int, pts_end: int, num_frames: int)-> int:
     """
