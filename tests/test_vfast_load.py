@@ -1,10 +1,16 @@
-from av.vfast import vfast_load
+from av.vfast import vfast_load, get_stats
 import numpy as np
 import time
 
 def main(video_path):
+
+    d = get_stats(video_path)
+
+    indices = list(range(0,d["num_frames"], 25))
+
     s = time.time()
-    data = vfast_load(video_path, height=180, width=224, num_threads=8)
+    # be careful about hitting swap memory
+    data = vfast_load(video_path, indices=indices, height=360, width=360, num_threads=4)
     e = time.time()
     
     print(data.shape)
