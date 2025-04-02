@@ -34,9 +34,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: ubuntu-24.04, python: "3.12", ffmpeg: "7.1", extras: true}
-          - {os: ubuntu-24.04, python: "pypy3.10", ffmpeg: "7.1"}
-          - {os: macos-14, python: "3.9", ffmpeg: "7.1"}
+          - {os: ubuntu-24.04, python: "3.12", ffmpeg: "7.1.1", extras: true}
+          - {os: ubuntu-24.04, python: "pypy3.10", ffmpeg: "7.1.1"}
+          - {os: macos-14, python: "3.9", ffmpeg: "7.1.1"}
 
     env:
       PYAV_PYTHON: python${{ matrix.config.python }}
@@ -121,8 +121,8 @@ jobs:
         . $CONDA/etc/profile.d/conda.sh
         conda config --set always_yes true
         conda config --add channels conda-forge
+        conda config --add channels scientific-python-nightly-wheels
         conda create -q -n pyav \
-          cython \
           numpy \
           pillow \
           pytest \
@@ -134,6 +134,7 @@ jobs:
       run: |
         . $CONDA/etc/profile.d/conda.sh
         conda activate pyav
+        pip install 'Cython==3.1.0a1'
         python scripts\\fetch-vendor.py --config-file scripts\\ffmpeg-${{ matrix.config.ffmpeg }}.json $CONDA_PREFIX\\Library
         python scripts\\comptime.py  ${{ matrix.config.ffmpeg }}
         python setup.py build_ext --inplace --ffmpeg-dir=$CONDA_PREFIX\\Library
