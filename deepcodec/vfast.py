@@ -77,7 +77,7 @@ def compute_parellelized_intervals(video_path: str, indicies: list | None, num_t
 
     interval: float = (d["end"] - d["start"]) / num_threads
     kf: list = d["kf"]
-    s: Set = set()
+    s = set()
 
     for i in range(1, num_threads):
         apx_pts: float = interval * i

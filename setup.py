@@ -206,7 +206,9 @@ ext_modules = cythonize(
     include_path=["include"],
 )
 
-for dirname, dirnames, filenames in os.walk(IMPORT_NAME):
+
+for dirname, dirnames, filenames in os.walk(IMPORT_NAME):    
+
     for filename in filenames:
         # We are looking for Cython sources.
         if filename.startswith("."):
@@ -224,7 +226,7 @@ for dirname, dirnames, filenames in os.walk(IMPORT_NAME):
         mod_name = base.replace("/", ".").replace(os.sep, ".")
 
         # Cythonize the module.
-        ext_modules = cythonize(
+        ext_modules += cythonize(
             Extension(
                 mod_name,
                 include_dirs=extension_extra["include_dirs"]+[numpy.get_include()],
