@@ -1,9 +1,9 @@
 import cython
 from cython.cimports import libav as lib
-from cython.cimports.av.bytesource import bytesource
-from cython.cimports.av.error import err_check
-from cython.cimports.av.opaque import opaque_container
-from cython.cimports.av.utils import avrational_to_fraction, to_avrational
+from cython.cimports.deepcodec.bytesource import bytesource
+from cython.cimports.deepcodec.error import err_check
+from cython.cimports.deepcodec.opaque import opaque_container
+from cython.cimports.deepcodec.utils import avrational_to_fraction, to_avrational
 
 
 @cython.cclass

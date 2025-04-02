@@ -1,6 +1,6 @@
 import cython
-from cython.cimports.av.audio.stream import AudioStream
-from cython.cimports.av.container.core import Container
+from cython.cimports.deepcodec.audio.stream import AudioStream
+from cython.cimports.deepcodec.container.core import Container
 from cython.cimports.libc.stdlib import free
 
 from deepcodec.logging import get_level, set_level

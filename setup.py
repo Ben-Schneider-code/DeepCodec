@@ -177,7 +177,7 @@ else:
         "library_dirs": [],
     }
 
-IMPORT_NAME = "av"
+IMPORT_NAME = "deepcodec"
 
 loudnorm_extension = Extension(
     f"{IMPORT_NAME}.filter.loudnorm",
@@ -224,7 +224,7 @@ for dirname, dirnames, filenames in os.walk(IMPORT_NAME):
         mod_name = base.replace("/", ".").replace(os.sep, ".")
 
         # Cythonize the module.
-        ext_modules += cythonize(
+        ext_modules = cythonize(
             Extension(
                 mod_name,
                 include_dirs=extension_extra["include_dirs"]+[numpy.get_include()],

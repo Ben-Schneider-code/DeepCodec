@@ -1,10 +1,10 @@
 import cython
 from cython.cimports import libav as lib
-from cython.cimports.av.audio.format import AudioFormat, get_audio_format
-from cython.cimports.av.audio.frame import AudioFrame, alloc_audio_frame
-from cython.cimports.av.audio.layout import AudioLayout, get_audio_layout
-from cython.cimports.av.frame import Frame
-from cython.cimports.av.packet import Packet
+from cython.cimports.deepcodec.audio.format import AudioFormat, get_audio_format
+from cython.cimports.deepcodec.audio.frame import AudioFrame, alloc_audio_frame
+from cython.cimports.deepcodec.audio.layout import AudioLayout, get_audio_layout
+from cython.cimports.deepcodec.frame import Frame
+from cython.cimports.deepcodec.packet import Packet
 
 
 @cython.cclass
