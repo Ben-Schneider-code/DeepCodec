@@ -1,4 +1,4 @@
-from av import ContainerFormat, formats_available, open
+from deepcodec import ContainerFormat, formats_available, open
 
 
 def test_matroska() -> None:

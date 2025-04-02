@@ -1,13 +1,13 @@
 import errno
 from traceback import format_exception_only
 
-import av
+import deepcodec
 
 from .common import is_windows
 
 
 def test_stringify() -> None:
-    for cls in (av.ValueError, av.FileNotFoundError, av.DecoderNotFoundError):
+    for cls in (deepcodec.ValueError, deepcodec.FileNotFoundError, deepcodec.DecoderNotFoundError):
         e = cls(1, "foo")
         assert f"{e}" == "[Errno 1] foo"
         assert f"{e!r}" == f"{cls.__name__}(1, 'foo')"
@@ -16,7 +16,7 @@ def test_stringify() -> None:
             == f"av.error.{cls.__name__}: [Errno 1] foo\n"
         )
 
-    for cls in (av.ValueError, av.FileNotFoundError, av.DecoderNotFoundError):
+    for cls in (deepcodec.ValueError, deepcodec.FileNotFoundError, deepcodec.DecoderNotFoundError):
         e = cls(1, "foo", "bar.txt")
         assert f"{e}" == "[Errno 1] foo: 'bar.txt'"
         assert f"{e!r}" == f"{cls.__name__}(1, 'foo', 'bar.txt')"
@@ -27,18 +27,18 @@ def test_stringify() -> None:
 
 
 def test_bases() -> None:
-    assert issubclass(av.ValueError, ValueError)
-    assert issubclass(av.ValueError, av.FFmpegError)
+    assert issubclass(deepcodec.ValueError, ValueError)
+    assert issubclass(deepcodec.ValueError, deepcodec.FFmpegError)
 
-    assert issubclass(av.FileNotFoundError, FileNotFoundError)
-    assert issubclass(av.FileNotFoundError, OSError)
-    assert issubclass(av.FileNotFoundError, av.FFmpegError)
+    assert issubclass(deepcodec.FileNotFoundError, FileNotFoundError)
+    assert issubclass(deepcodec.FileNotFoundError, OSError)
+    assert issubclass(deepcodec.FileNotFoundError, deepcodec.FFmpegError)
 
 
 def test_filenotfound():
     """Catch using builtin class on Python 3.3"""
     try:
-        av.open("does not exist")
+        deepcodec.open("does not exist")
     except FileNotFoundError as e:
         assert e.errno == errno.ENOENT
         if is_windows:
@@ -58,8 +58,8 @@ def test_buffertoosmall() -> None:
 
     BUFFER_TOO_SMALL = 1397118274
     try:
-        av.error.err_check(-BUFFER_TOO_SMALL)
-    except av.error.BufferTooSmallError as e:
+        deepcodec.error.err_check(-BUFFER_TOO_SMALL)
+    except deepcodec.error.BufferTooSmallError as e:
         assert e.errno == BUFFER_TOO_SMALL
     else:
         assert False, "No exception raised!"

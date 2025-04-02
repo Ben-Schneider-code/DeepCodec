@@ -1,10 +1,10 @@
-import av
-import av.datasets
+import deepcodec
+import deepcodec.datasets
 
-av.logging.set_level(av.logging.VERBOSE)
+deepcodec.logging.set_level(deepcodec.logging.VERBOSE)
 
-input_ = av.open(av.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4"))
-output = av.open("remuxed.mkv", "w")
+input_ = deepcodec.open(deepcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4"))
+output = deepcodec.open("remuxed.mkv", "w")
 
 # Make an output stream using the input as a template. This copies the stream
 # setup from one to the other.

@@ -1,9 +1,9 @@
-import av
+import deepcodec
 
-av.logging.set_level(av.logging.VERBOSE)
+deepcodec.logging.set_level(deepcodec.logging.VERBOSE)
 
-input_ = av.open("resources/webvtt.mkv")
-output = av.open("remuxed.vtt", "w")
+input_ = deepcodec.open("resources/webvtt.mkv")
+output = deepcodec.open("remuxed.vtt", "w")
 
 in_stream = input_.streams.subtitles[0]
 out_stream = output.add_stream_from_template(in_stream)
@@ -19,7 +19,7 @@ output.close()
 
 print("Remuxing done")
 
-with av.open("remuxed.vtt") as f:
+with deepcodec.open("remuxed.vtt") as f:
     for subset in f.decode(subtitles=0):
         for sub in subset:
             print(sub.ass)

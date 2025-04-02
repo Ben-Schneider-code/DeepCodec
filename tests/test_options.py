@@ -1,5 +1,5 @@
-from av import ContainerFormat
-from av.option import Option, OptionType
+from deepcodec import ContainerFormat
+from deepcodec.option import Option, OptionType
 
 
 class TestOptions:

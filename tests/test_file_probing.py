@@ -1,13 +1,13 @@
 from fractions import Fraction
 
-import av
+import deepcodec
 
 from .common import TestCase, fate_suite
 
 
 class TestAudioProbe(TestCase):
     def setUp(self):
-        self.file = av.open(fate_suite("aac/latm_stereo_to_51.ts"))
+        self.file = deepcodec.open(fate_suite("aac/latm_stereo_to_51.ts"))
 
     def test_container_probing(self) -> None:
         assert self.file.bit_rate == 269558
@@ -23,7 +23,7 @@ class TestAudioProbe(TestCase):
     def test_stream_probing(self) -> None:
         stream = self.file.streams[0]
 
-        assert isinstance(stream, av.AudioStream)
+        assert isinstance(stream, deepcodec.AudioStream)
         assert str(stream).startswith(
             "<av.AudioStream #0 aac_latm at 48000Hz, stereo, fltp at "
         )
@@ -59,7 +59,7 @@ class TestAudioProbeCorrupt(TestCase):
         with open(path, "wb"):
             pass
 
-        self.file = av.open(path, "r")
+        self.file = deepcodec.open(path, "r")
 
     def test_container_probing(self) -> None:
         assert self.file.bit_rate == 0
@@ -75,7 +75,7 @@ class TestAudioProbeCorrupt(TestCase):
     def test_stream_probing(self) -> None:
         stream = self.file.streams[0]
 
-        assert isinstance(stream, av.AudioStream)
+        assert isinstance(stream, deepcodec.AudioStream)
         assert str(stream).startswith(
             "<av.AudioStream #0 flac at 0Hz, 0 channels, None at "
         )
@@ -105,7 +105,7 @@ class TestAudioProbeCorrupt(TestCase):
 
 class TestDataProbe(TestCase):
     def setUp(self) -> None:
-        self.file = av.open(fate_suite("mxf/track_01_v02.mxf"))
+        self.file = deepcodec.open(fate_suite("mxf/track_01_v02.mxf"))
 
     def test_container_probing(self) -> None:
         assert self.file.bit_rate == 27872687
@@ -162,7 +162,7 @@ class TestDataProbe(TestCase):
 
 class TestSubtitleProbe(TestCase):
     def setUp(self) -> None:
-        self.file = av.open(fate_suite("sub/MovText_capability_tester.mp4"))
+        self.file = deepcodec.open(fate_suite("sub/MovText_capability_tester.mp4"))
 
     def test_container_probing(self) -> None:
         assert self.file.bit_rate == 810
@@ -208,7 +208,7 @@ class TestSubtitleProbe(TestCase):
 
 class TestVideoProbe(TestCase):
     def setUp(self) -> None:
-        self.file = av.open(fate_suite("mpeg2/mpeg2_field_encoding.ts"))
+        self.file = deepcodec.open(fate_suite("mpeg2/mpeg2_field_encoding.ts"))
 
     def test_container_probing(self) -> None:
         assert self.file.bit_rate == 3950617
@@ -224,7 +224,7 @@ class TestVideoProbe(TestCase):
     def test_stream_probing(self) -> None:
         stream = self.file.streams[0]
 
-        assert isinstance(stream, av.video.stream.VideoStream)
+        assert isinstance(stream, deepcodec.video.stream.VideoStream)
         assert str(stream).startswith(
             "<av.VideoStream #0 mpeg2video, yuv420p 720x576 at "
         )
@@ -266,7 +266,7 @@ class TestVideoProbeCorrupt(TestCase):
         with open(path, "wb"):
             pass
 
-        self.file = av.open(path)
+        self.file = deepcodec.open(path)
 
     def test_container_probing(self) -> None:
         assert str(self.file.format) == "<av.ContainerFormat 'h264'>"
@@ -283,7 +283,7 @@ class TestVideoProbeCorrupt(TestCase):
     def test_stream_probing(self) -> None:
         stream = self.file.streams[0]
 
-        assert isinstance(stream, av.VideoStream)
+        assert isinstance(stream, deepcodec.VideoStream)
         assert str(stream).startswith("<av.VideoStream #0 h264, None 0x0 at ")
 
         # actual stream properties

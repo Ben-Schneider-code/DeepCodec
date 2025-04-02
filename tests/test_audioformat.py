@@ -2,7 +2,7 @@ import sys
 
 import pytest
 
-from av import AudioFormat
+from deepcodec import AudioFormat
 
 
 def test_s16_inspection() -> None:

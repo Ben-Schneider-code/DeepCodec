@@ -1,12 +1,12 @@
-import av
+import deepcodec
 import time
-from av.vfast import estimate_frame_location
+from deepcodec.vfast import estimate_frame_location
 def main(test_video):
 
     # s = time.time()
-    out = av.get_stats(test_video)
+    out = deepcodec.get_stats(test_video)
     # e = time.time()
-    container = av.open(test_video)
+    container = deepcodec.open(test_video)
 
     fails = []
     for real_loc, frame in enumerate(container.decode(video=0)):

@@ -1,5 +1,5 @@
-import av
-from av.subtitles.subtitle import AssSubtitle, BitmapSubtitle
+import deepcodec
+from deepcodec.subtitles.subtitle import AssSubtitle, BitmapSubtitle
 
 from .common import fate_suite
 
@@ -9,7 +9,7 @@ class TestSubtitle:
         path = fate_suite("sub/MovText_capability_tester.mp4")
 
         subs = []
-        with av.open(path) as container:
+        with deepcodec.open(path) as container:
             for packet in container.demux():
                 subs.extend(packet.decode())
 
@@ -32,7 +32,7 @@ class TestSubtitle:
         path = fate_suite("sub/vobsub.sub")
 
         subs = []
-        with av.open(path) as container:
+        with deepcodec.open(path) as container:
             for packet in container.demux():
                 subs.extend(packet.decode())
 
@@ -61,7 +61,7 @@ class TestSubtitle:
         path = fate_suite("sub/MovText_capability_tester.mp4")
 
         subs = []
-        with av.open(path) as container:
+        with deepcodec.open(path) as container:
             stream = container.streams.subtitles[0]
             for packet in container.demux(stream):
                 subs.extend(stream.decode(packet))

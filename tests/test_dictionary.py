@@ -1,6 +1,6 @@
 import pytest
 
-from av.dictionary import Dictionary
+from deepcodec.dictionary import Dictionary
 
 
 def test_dictionary() -> None:
