@@ -1,4 +1,4 @@
-from av.filter.context cimport FilterContext
+from deepcodec.filter.context cimport FilterContext
 
 import errno
 

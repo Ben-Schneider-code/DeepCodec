@@ -1,6 +1,6 @@
 cimport libav as lib
 
-from av.stream cimport Stream
+from deepcodec.stream cimport Stream
 
 from .core cimport Container
 

@@ -10,20 +10,20 @@ from pathlib import Path
 
 cimport libav as lib
 
-from av.codec.hwaccel cimport HWAccel
-from av.container.core cimport timeout_info
-from av.container.input cimport InputContainer
-from av.container.output cimport OutputContainer
-from av.container.pyio cimport pyio_close_custom_gil, pyio_close_gil
-from av.error cimport err_check, stash_exception
-from av.format cimport build_container_format
-from av.utils cimport avdict_to_dict
+from deepcodec.codec.hwaccel cimport HWAccel
+from deepcodec.container.core cimport timeout_info
+from deepcodec.container.input cimport InputContainer
+from deepcodec.container.output cimport OutputContainer
+from deepcodec.container.pyio cimport pyio_close_custom_gil, pyio_close_gil
+from deepcodec.error cimport err_check, stash_exception
+from deepcodec.format cimport build_container_format
+from deepcodec.utils cimport avdict_to_dict
 
-from av.dictionary import Dictionary
-from av.logging import Capture as LogCapture
+from deepcodec.dictionary import Dictionary
+from deepcodec.logging import Capture as LogCapture
 from libc.stdlib cimport malloc, free
 from cpython.ref cimport PyObject
-from av.video.format cimport VideoFormat
+from deepcodec.video.format cimport VideoFormat
 import time
 
 cdef object _cinit_sentinel = object()

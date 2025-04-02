@@ -1,15 +1,15 @@
 from libc.stdint cimport int64_t
 from libc.stdlib cimport free, malloc
 
-from av.codec.context cimport CodecContext, wrap_codec_context
-from av.container.streams cimport StreamContainer
-from av.dictionary cimport _Dictionary
-from av.error cimport err_check
-from av.packet cimport Packet
-from av.stream cimport Stream, wrap_stream
-from av.utils cimport avdict_to_dict
+from deepcodec.codec.context cimport CodecContext, wrap_codec_context
+from deepcodec.container.streams cimport StreamContainer
+from deepcodec.dictionary cimport _Dictionary
+from deepcodec.error cimport err_check
+from deepcodec.packet cimport Packet
+from deepcodec.stream cimport Stream, wrap_stream
+from deepcodec.utils cimport avdict_to_dict
 
-from av.dictionary import Dictionary
+from deepcodec.dictionary import Dictionary
 
 
 cdef close_input(InputContainer self):

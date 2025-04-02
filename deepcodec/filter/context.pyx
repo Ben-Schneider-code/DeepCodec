@@ -1,13 +1,13 @@
 import weakref
 
-from av.audio.frame cimport alloc_audio_frame
-from av.dictionary cimport _Dictionary
-from av.dictionary import Dictionary
-from av.error cimport err_check
-from av.filter.pad cimport alloc_filter_pads
-from av.frame cimport Frame
-from av.utils cimport avrational_to_fraction
-from av.video.frame cimport alloc_video_frame
+from deepcodec.audio.frame cimport alloc_audio_frame
+from deepcodec.dictionary cimport _Dictionary
+from deepcodec.dictionary import Dictionary
+from deepcodec.error cimport err_check
+from deepcodec.filter.pad cimport alloc_filter_pads
+from deepcodec.frame cimport Frame
+from deepcodec.utils cimport avrational_to_fraction
+from deepcodec.video.frame cimport alloc_video_frame
 
 
 cdef object _cinit_sentinel = object()

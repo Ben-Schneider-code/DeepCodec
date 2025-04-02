@@ -1,7 +1,7 @@
 cimport libav as lib
 
-from av.filter.graph cimport Graph
-from av.filter.pad cimport FilterContextPad
+from deepcodec.filter.graph cimport Graph
+from deepcodec.filter.pad cimport FilterContextPad
 
 
 cdef class FilterLink:

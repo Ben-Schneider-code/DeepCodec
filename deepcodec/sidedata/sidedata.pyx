@@ -3,7 +3,7 @@ from libc.stdint cimport int32_t
 from collections.abc import Mapping
 from enum import Enum
 
-from av.sidedata.motionvectors import MotionVectors
+from deepcodec.sidedata.motionvectors import MotionVectors
 
 
 cdef object _cinit_bypass_sentinel = object()

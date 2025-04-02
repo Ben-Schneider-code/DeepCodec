@@ -1,7 +1,7 @@
 
-from av.audio.frame cimport AudioFrame
-from av.audio.resampler cimport AudioResampler
-from av.codec.context cimport CodecContext
+from deepcodec.audio.frame cimport AudioFrame
+from deepcodec.audio.resampler cimport AudioResampler
+from deepcodec.codec.context cimport CodecContext
 
 
 cdef class AudioCodecContext(CodecContext):

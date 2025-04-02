@@ -1,5 +1,5 @@
-from av.buffer cimport Buffer
-from av.frame cimport Frame
+from deepcodec.buffer cimport Buffer
+from deepcodec.frame cimport Frame
 
 
 cdef class Plane(Buffer):

@@ -1,9 +1,9 @@
 cimport libav as lib
 
-from av.codec.context cimport CodecContext
-from av.video.format cimport VideoFormat
-from av.video.frame cimport VideoFrame
-from av.video.reformatter cimport VideoReformatter
+from deepcodec.codec.context cimport CodecContext
+from deepcodec.video.format cimport VideoFormat
+from deepcodec.video.frame cimport VideoFrame
+from deepcodec.video.reformatter cimport VideoReformatter
 
 
 # The get_format callback in AVCodecContext is called by the decoder to pick a format out of a list.

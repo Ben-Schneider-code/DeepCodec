@@ -1,4 +1,4 @@
-from av.stream cimport Stream
+from deepcodec.stream cimport Stream
 
 
 cdef class AttachmentStream(Stream):

@@ -1,6 +1,6 @@
 cimport libav as lib
 
-from av.utils cimport flag_in_bitfield
+from deepcodec.utils cimport flag_in_bitfield
 
 from enum import Enum, Flag
 

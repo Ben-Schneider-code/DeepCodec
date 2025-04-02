@@ -3,11 +3,11 @@ from enum import IntEnum
 
 from libc.stdint cimport uint8_t
 
-from av.error cimport err_check
-from av.sidedata.sidedata cimport get_display_rotation
-from av.utils cimport check_ndarray
-from av.video.format cimport get_pix_fmt, get_video_format
-from av.video.plane cimport VideoPlane
+from deepcodec.error cimport err_check
+from deepcodec.sidedata.sidedata cimport get_display_rotation
+from deepcodec.utils cimport check_ndarray
+from deepcodec.video.format cimport get_pix_fmt, get_video_format
+from deepcodec.video.plane cimport VideoPlane
 
 
 cdef object _cinit_bypass_sentinel

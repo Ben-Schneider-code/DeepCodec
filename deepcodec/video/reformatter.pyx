@@ -1,9 +1,9 @@
 cimport libav as lib
 from libc.stdint cimport uint8_t
 
-from av.error cimport err_check
-from av.video.format cimport VideoFormat
-from av.video.frame cimport alloc_video_frame
+from deepcodec.error cimport err_check
+from deepcodec.video.format cimport VideoFormat
+from deepcodec.video.frame cimport alloc_video_frame
 
 from enum import IntEnum
 

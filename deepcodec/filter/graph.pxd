@@ -1,6 +1,6 @@
 cimport libav as lib
 
-from av.filter.context cimport FilterContext
+from deepcodec.filter.context cimport FilterContext
 
 
 cdef class Graph:

@@ -2,9 +2,9 @@ cimport libav as lib
 
 from enum import Flag
 
-from av.error cimport err_check
-from av.packet cimport Packet
-from av.utils cimport (
+from deepcodec.error cimport err_check
+from deepcodec.packet cimport Packet
+from deepcodec.utils cimport (
     avdict_to_dict,
     avrational_to_fraction,
     dict_to_avdict,
@@ -50,19 +50,19 @@ cdef Stream wrap_stream(Container container, lib.AVStream *c_stream, CodecContex
     cdef Stream py_stream
 
     if c_stream.codecpar.codec_type == lib.AVMEDIA_TYPE_VIDEO:
-        from av.video.stream import VideoStream
+        from deepcodec.video.stream import VideoStream
         py_stream = VideoStream.__new__(VideoStream, _cinit_bypass_sentinel)
     elif c_stream.codecpar.codec_type == lib.AVMEDIA_TYPE_AUDIO:
-        from av.audio.stream import AudioStream
+        from deepcodec.audio.stream import AudioStream
         py_stream = AudioStream.__new__(AudioStream, _cinit_bypass_sentinel)
     elif c_stream.codecpar.codec_type == lib.AVMEDIA_TYPE_SUBTITLE:
-        from av.subtitles.stream import SubtitleStream
+        from deepcodec.subtitles.stream import SubtitleStream
         py_stream = SubtitleStream.__new__(SubtitleStream, _cinit_bypass_sentinel)
     elif c_stream.codecpar.codec_type == lib.AVMEDIA_TYPE_ATTACHMENT:
-        from av.attachments.stream import AttachmentStream
+        from deepcodec.attachments.stream import AttachmentStream
         py_stream = AttachmentStream.__new__(AttachmentStream, _cinit_bypass_sentinel)
     elif c_stream.codecpar.codec_type == lib.AVMEDIA_TYPE_DATA:
-        from av.data.stream import DataStream
+        from deepcodec.data.stream import DataStream
         py_stream = DataStream.__new__(DataStream, _cinit_bypass_sentinel)
     else:
         py_stream = Stream.__new__(Stream, _cinit_bypass_sentinel)

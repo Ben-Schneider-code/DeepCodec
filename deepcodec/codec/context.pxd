@@ -1,11 +1,11 @@
 cimport libav as lib
 from libc.stdint cimport int64_t
 
-from av.bytesource cimport ByteSource
-from av.codec.codec cimport Codec
-from av.codec.hwaccel cimport HWAccel
-from av.frame cimport Frame
-from av.packet cimport Packet
+from deepcodec.bytesource cimport ByteSource
+from deepcodec.codec.codec cimport Codec
+from deepcodec.codec.hwaccel cimport HWAccel
+from deepcodec.frame cimport Frame
+from deepcodec.packet cimport Packet
 
 
 cdef class CodecContext:

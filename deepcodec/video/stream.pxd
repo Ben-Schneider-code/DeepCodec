@@ -1,5 +1,5 @@
-from av.packet cimport Packet
-from av.stream cimport Stream
+from deepcodec.packet cimport Packet
+from deepcodec.stream cimport Stream
 
 from .frame cimport VideoFrame
 

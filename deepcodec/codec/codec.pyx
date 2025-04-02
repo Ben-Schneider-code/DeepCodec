@@ -1,10 +1,10 @@
 cimport libav as lib
 
-from av.audio.format cimport get_audio_format
-from av.codec.hwaccel cimport wrap_hwconfig
-from av.descriptor cimport wrap_avclass
-from av.utils cimport avrational_to_fraction
-from av.video.format cimport get_video_format
+from deepcodec.audio.format cimport get_audio_format
+from deepcodec.codec.hwaccel cimport wrap_hwconfig
+from deepcodec.descriptor cimport wrap_avclass
+from deepcodec.utils cimport avrational_to_fraction
+from deepcodec.video.format cimport get_video_format
 
 from enum import Flag, IntEnum
 
@@ -279,7 +279,7 @@ cdef class Codec:
 
         .. code-block:: python
 
-            from av.codec import Codec, Capabilities
+            from deepcodec.codec import Codec, Capabilities
 
             codec = Codec("h264", "w")
 

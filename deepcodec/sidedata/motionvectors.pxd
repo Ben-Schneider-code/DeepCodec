@@ -1,7 +1,7 @@
 cimport libav as lib
 
-from av.frame cimport Frame
-from av.sidedata.sidedata cimport SideData
+from deepcodec.frame cimport Frame
+from deepcodec.sidedata.sidedata cimport SideData
 
 
 cdef class _MotionVectors(SideData):

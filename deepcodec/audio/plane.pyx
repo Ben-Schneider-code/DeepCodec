@@ -1,4 +1,4 @@
-from av.audio.frame cimport AudioFrame
+from deepcodec.audio.frame cimport AudioFrame
 
 
 cdef class AudioPlane(Plane):

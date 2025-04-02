@@ -1,15 +1,15 @@
 cimport libav as lib
 from libc.stdint cimport int64_t
 
-from av.codec.context cimport CodecContext
-from av.codec.hwaccel cimport HWAccel, HWConfig
-from av.error cimport err_check
-from av.frame cimport Frame
-from av.packet cimport Packet
-from av.utils cimport avrational_to_fraction, to_avrational
-from av.video.format cimport VideoFormat, get_pix_fmt, get_video_format
-from av.video.frame cimport VideoFrame, alloc_video_frame
-from av.video.reformatter cimport VideoReformatter
+from deepcodec.codec.context cimport CodecContext
+from deepcodec.codec.hwaccel cimport HWAccel, HWConfig
+from deepcodec.error cimport err_check
+from deepcodec.frame cimport Frame
+from deepcodec.packet cimport Packet
+from deepcodec.utils cimport avrational_to_fraction, to_avrational
+from deepcodec.video.format cimport VideoFormat, get_pix_fmt, get_video_format
+from deepcodec.video.frame cimport VideoFrame, alloc_video_frame
+from deepcodec.video.reformatter cimport VideoReformatter
 
 
 cdef lib.AVPixelFormat _get_hw_format(lib.AVCodecContext *ctx, const lib.AVPixelFormat *pix_fmts) noexcept:

@@ -1,7 +1,7 @@
-from av.audio.format cimport AudioFormat
-from av.audio.frame cimport AudioFrame
-from av.audio.layout cimport AudioLayout
-from av.filter.graph cimport Graph
+from deepcodec.audio.format cimport AudioFormat
+from deepcodec.audio.frame cimport AudioFrame
+from deepcodec.audio.layout cimport AudioLayout
+from deepcodec.filter.graph cimport Graph
 
 
 cdef class AudioResampler:

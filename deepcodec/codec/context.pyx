@@ -3,16 +3,16 @@ from libc.errno cimport EAGAIN
 from libc.stdint cimport uint8_t
 from libc.string cimport memcpy
 
-from av.bytesource cimport ByteSource, bytesource
-from av.codec.codec cimport Codec, wrap_codec
-from av.dictionary cimport _Dictionary
-from av.error cimport err_check
-from av.packet cimport Packet
-from av.utils cimport avrational_to_fraction, to_avrational
+from deepcodec.bytesource cimport ByteSource, bytesource
+from deepcodec.codec.codec cimport Codec, wrap_codec
+from deepcodec.dictionary cimport _Dictionary
+from deepcodec.error cimport err_check
+from deepcodec.packet cimport Packet
+from deepcodec.utils cimport avrational_to_fraction, to_avrational
 
 from enum import Flag, IntEnum
 
-from av.dictionary import Dictionary
+from deepcodec.dictionary import Dictionary
 
 
 cdef object _cinit_sentinel = object()
@@ -24,13 +24,13 @@ cdef CodecContext wrap_codec_context(lib.AVCodecContext *c_ctx, const lib.AVCode
     cdef CodecContext py_ctx
 
     if c_ctx.codec_type == lib.AVMEDIA_TYPE_VIDEO:
-        from av.video.codeccontext import VideoCodecContext
+        from deepcodec.video.codeccontext import VideoCodecContext
         py_ctx = VideoCodecContext(_cinit_sentinel)
     elif c_ctx.codec_type == lib.AVMEDIA_TYPE_AUDIO:
-        from av.audio.codeccontext import AudioCodecContext
+        from deepcodec.audio.codeccontext import AudioCodecContext
         py_ctx = AudioCodecContext(_cinit_sentinel)
     elif c_ctx.codec_type == lib.AVMEDIA_TYPE_SUBTITLE:
-        from av.subtitles.codeccontext import SubtitleCodecContext
+        from deepcodec.subtitles.codeccontext import SubtitleCodecContext
         py_ctx = SubtitleCodecContext(_cinit_sentinel)
     else:
         py_ctx = CodecContext(_cinit_sentinel)

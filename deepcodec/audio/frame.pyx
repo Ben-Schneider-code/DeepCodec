@@ -1,8 +1,8 @@
-from av.audio.format cimport get_audio_format
-from av.audio.layout cimport get_audio_layout
-from av.audio.plane cimport AudioPlane
-from av.error cimport err_check
-from av.utils cimport check_ndarray
+from deepcodec.audio.format cimport get_audio_format
+from deepcodec.audio.layout cimport get_audio_layout
+from deepcodec.audio.plane cimport AudioPlane
+from deepcodec.error cimport err_check
+from deepcodec.utils cimport check_ndarray
 
 
 cdef object _cinit_bypass_sentinel

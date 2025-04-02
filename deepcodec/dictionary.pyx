@@ -1,6 +1,6 @@
 from collections.abc import MutableMapping
 
-from av.error cimport err_check
+from deepcodec.error cimport err_check
 
 
 cdef class _Dictionary:

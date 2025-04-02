@@ -1,4 +1,4 @@
-from av.filter.link cimport wrap_filter_link
+from deepcodec.filter.link cimport wrap_filter_link
 
 
 cdef object _cinit_sentinel = object()

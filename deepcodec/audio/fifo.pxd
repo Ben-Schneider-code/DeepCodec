@@ -1,7 +1,7 @@
 cimport libav as lib
 from libc.stdint cimport int64_t, uint64_t
 
-from av.audio.frame cimport AudioFrame
+from deepcodec.audio.frame cimport AudioFrame
 
 
 cdef class AudioFifo:

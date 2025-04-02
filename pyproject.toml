@@ -37,17 +37,12 @@ dynamic = ["version"]
 zip-safe = false
 
 [tool.setuptools.dynamic]
-version = {attr = "av.about.__version__"}
-
-[project.urls]
-"Bug Tracker" = "https://github.com/PyAV-Org/PyAV/discussions/new?category=4-bugs"
-"Source Code" = "https://github.com/PyAV-Org/PyAV"
-homepage = "https://pyav.basswood-io.com"
+version = {attr = "deepcodec.about.__version__"}
 
 [project.scripts]
-"pyav" = "av.__main__:main"
+"pyav" = "deepcodec.__main__:main"
 
 [tool.isort]
 profile = "black"
-known_first_party = ["av"]
-skip = ["av/__init__.py"]
+known_first_party = ["deepcodec"]
+skip = ["deepcodec/__init__.py"]

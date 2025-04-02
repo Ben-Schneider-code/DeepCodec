@@ -3,12 +3,12 @@ from enum import IntEnum
 
 cimport libav as lib
 
-from av.codec.codec cimport Codec
-from av.dictionary cimport _Dictionary
-from av.error cimport err_check
-from av.video.format cimport get_video_format
+from deepcodec.codec.codec cimport Codec
+from deepcodec.dictionary cimport _Dictionary
+from deepcodec.error cimport err_check
+from deepcodec.video.format cimport get_video_format
 
-from av.dictionary import Dictionary
+from deepcodec.dictionary import Dictionary
 
 
 class HWDeviceType(IntEnum):

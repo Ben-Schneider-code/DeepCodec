@@ -1,4 +1,4 @@
-from av.video.frame cimport VideoFrame
+from deepcodec.video.frame cimport VideoFrame
 
 
 cdef class VideoPlane(Plane):

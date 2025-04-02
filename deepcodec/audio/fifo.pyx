@@ -1,5 +1,5 @@
-from av.audio.frame cimport alloc_audio_frame
-from av.error cimport err_check
+from deepcodec.audio.frame cimport alloc_audio_frame
+from deepcodec.error cimport err_check
 
 
 cdef class AudioFifo:

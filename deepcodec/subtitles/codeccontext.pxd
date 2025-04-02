@@ -1,4 +1,4 @@
-from av.codec.context cimport CodecContext
+from deepcodec.codec.context cimport CodecContext
 
 
 cdef class SubtitleCodecContext(CodecContext):

@@ -1,6 +1,6 @@
 cimport libav as lib
 
-from av.descriptor cimport Descriptor
+from deepcodec.descriptor cimport Descriptor
 
 
 cdef class Filter:

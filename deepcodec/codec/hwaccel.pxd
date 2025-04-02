@@ -1,6 +1,6 @@
 cimport libav as lib
 
-from av.codec.codec cimport Codec
+from deepcodec.codec.codec cimport Codec
 
 
 cdef class HWConfig:

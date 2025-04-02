@@ -1,4 +1,4 @@
-from av.audio.stream cimport AudioStream
+from deepcodec.audio.stream cimport AudioStream
 
 
 cdef extern from "libavcodec/avcodec.h":

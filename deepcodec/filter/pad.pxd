@@ -1,8 +1,8 @@
 cimport libav as lib
 
-from av.filter.context cimport FilterContext
-from av.filter.filter cimport Filter
-from av.filter.link cimport FilterLink
+from deepcodec.filter.context cimport FilterContext
+from deepcodec.filter.filter cimport Filter
+from deepcodec.filter.link cimport FilterLink
 
 
 cdef class FilterPad:

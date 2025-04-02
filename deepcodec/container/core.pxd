@@ -1,11 +1,11 @@
 cimport libav as lib
 
-from av.codec.hwaccel cimport HWAccel
-from av.container.pyio cimport PyIOFile
-from av.container.streams cimport StreamContainer
-from av.dictionary cimport _Dictionary
-from av.format cimport ContainerFormat
-from av.stream cimport Stream
+from deepcodec.codec.hwaccel cimport HWAccel
+from deepcodec.container.pyio cimport PyIOFile
+from deepcodec.container.streams cimport StreamContainer
+from deepcodec.dictionary cimport _Dictionary
+from deepcodec.format cimport ContainerFormat
+from deepcodec.stream cimport Stream
 
 # Interrupt callback information, times are in seconds.
 ctypedef struct timeout_info:

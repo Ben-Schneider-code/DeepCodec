@@ -1,8 +1,8 @@
-from av.error cimport err_check
-from av.opaque cimport opaque_container
-from av.utils cimport avrational_to_fraction, to_avrational
+from deepcodec.error cimport err_check
+from deepcodec.opaque cimport opaque_container
+from deepcodec.utils cimport avrational_to_fraction, to_avrational
 
-from av.sidedata.sidedata import SideDataContainer
+from deepcodec.sidedata.sidedata import SideDataContainer
 
 
 cdef class Frame:

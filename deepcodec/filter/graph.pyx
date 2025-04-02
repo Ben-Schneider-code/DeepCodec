@@ -1,14 +1,14 @@
 import warnings
 from fractions import Fraction
 
-from av.audio.format cimport AudioFormat
-from av.audio.frame cimport AudioFrame
-from av.audio.layout cimport AudioLayout
-from av.error cimport err_check
-from av.filter.context cimport FilterContext, wrap_filter_context
-from av.filter.filter cimport Filter, wrap_filter
-from av.video.format cimport VideoFormat
-from av.video.frame cimport VideoFrame
+from deepcodec.audio.format cimport AudioFormat
+from deepcodec.audio.frame cimport AudioFrame
+from deepcodec.audio.layout cimport AudioLayout
+from deepcodec.error cimport err_check
+from deepcodec.filter.context cimport FilterContext, wrap_filter_context
+from deepcodec.filter.filter cimport Filter, wrap_filter
+from deepcodec.video.format cimport VideoFormat
+from deepcodec.video.frame cimport VideoFrame
 
 
 cdef class Graph:

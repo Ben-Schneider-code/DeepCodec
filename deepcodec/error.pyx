@@ -2,7 +2,7 @@ cimport libav as lib
 from libc.stdio cimport fprintf, stderr
 from libc.stdlib cimport free, malloc
 
-from av.logging cimport get_last_error
+from deepcodec.logging cimport get_last_error
 
 import errno
 import os

@@ -1,7 +1,7 @@
 cimport libav as lib
 
-from av.container.core cimport Container
-from av.stream cimport Stream
+from deepcodec.container.core cimport Container
+from deepcodec.stream cimport Stream
 
 
 cdef class OutputContainer(Container):

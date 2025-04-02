@@ -1,7 +1,7 @@
 cimport libav as lib
 
-from av.packet cimport Packet
-from av.utils cimport avrational_to_fraction, to_avrational
+from deepcodec.packet cimport Packet
+from deepcodec.utils cimport avrational_to_fraction, to_avrational
 
 from .frame cimport VideoFrame
 

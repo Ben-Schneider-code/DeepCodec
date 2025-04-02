@@ -1,6 +1,6 @@
 cimport libav as lib
 
-from av.descriptor cimport wrap_avclass
+from deepcodec.descriptor cimport wrap_avclass
 
 from enum import Flag
 

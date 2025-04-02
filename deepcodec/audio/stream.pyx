@@ -1,4 +1,4 @@
-from av.packet cimport Packet
+from deepcodec.packet cimport Packet
 
 from .frame cimport AudioFrame
 
