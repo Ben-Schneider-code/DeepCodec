@@ -17,6 +17,13 @@ We are operating with `semantic versioning <https://semver.org>`_.
     are merged into the "default" branch.
 
 
+v14.2.1
+-------
+
+Fixes:
+
+- Uses ffmpeg 7.1.1, fixes deadlocks.
+
 v14.2.0
 -------
 
@@ -31,6 +38,7 @@ Features:
 Misc:
 
 - Drop support for MacOS 11 by :gh-user:`WyattBlue` in (:pr:`1764`).
+- Set default bitrate to 0, allowing variable bitrate by :gh-user:`WyattBlue`.
 
 
 v14.1.0
