@@ -6,7 +6,7 @@ def main(video_path):
 
     d = get_stats(video_path)
 
-    indices = list(range(0,d["num_frames"], 25))
+    indices = None # list(range(0,d["num_frames"], 25))
 
     for thread in [16,8,4,2]:
         s = time.time()

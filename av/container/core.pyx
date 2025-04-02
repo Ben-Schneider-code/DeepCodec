@@ -50,6 +50,8 @@ cpdef cnp.ndarray[cnp.uint8_t, ndim=4] parallel_open(
     int global_min_pts,
     int global_max_pts
 ):  
+    s = time.time()
+    
     cdef InputContainer interval_container = open(file)
 
     # allocate buffer of shape B,C,H,W
@@ -76,6 +78,10 @@ cpdef cnp.ndarray[cnp.uint8_t, ndim=4] parallel_open(
             buffer_idx += 1
 
     assert buffer_idx == buffer_size, f"rank: {rank} buffer_idx was {buffer_idx} and buffer_size was {buffer_size}"
+    
+    e = time.time()
+    print(f"rank {rank} - time spent in core loop: {e-s}")
+
     return np_buffer
 
 
