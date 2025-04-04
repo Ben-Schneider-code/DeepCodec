@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  CIBW_BEFORE_BUILD: "scripts/build-arm64"
+  CIBW_BEFORE_BUILD: "source scripts/build-arm64"
 
 jobs:
   build_wheels:
