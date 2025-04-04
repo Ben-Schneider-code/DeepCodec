@@ -1,17 +1,4 @@
 name: smoke
-on:
-  push:
-    branches: main
-    paths-ignore:
-      - '**.md'
-      - '**.rst'
-      - '**.txt'
-  pull_request:
-    branches: main
-    paths-ignore:
-      - '**.md'
-      - '**.rst'
-      - '**.txt'
 jobs:
   style:
     runs-on: ubuntu-24.04
