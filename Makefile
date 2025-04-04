@@ -25,6 +25,7 @@ clean:
 	- rm -rf build
 	- rm -rf sandbox
 	- rm -rf src
+	- rm -rf dist
 	- make -C docs clean
 
 fate-suite:

@@ -10,6 +10,7 @@
 /vendor
 /venv
 /venvs
+/repaired_wheels
 
 # Build products
 *.dll
