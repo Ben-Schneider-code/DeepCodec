@@ -3,6 +3,9 @@ name: Build
 on: 
   workflow_dispatch:
 
+env:
+  CIBW_BEFORE_BUILD: "scripts/build-arm64"
+
 jobs:
   build_wheels:
     name: Build wheels on ${{ matrix.os }}
@@ -10,6 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
+        arch: [arm64]
 
     steps:
       - uses: actions/checkout@v4
