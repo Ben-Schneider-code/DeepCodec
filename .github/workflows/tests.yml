@@ -1,7 +1,5 @@
 name: tests
 on:
-  release:
-    types: [published]
   workflow_dispatch:
 jobs:
   package-source:
