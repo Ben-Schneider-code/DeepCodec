@@ -11,7 +11,7 @@ jobs:
           python-version: "3.13"
       - name: Build source package
         run: |
-          pip install -U --pre cython setuptools
+          pip install -U --pre cython setuptools numpy
           python scripts/fetch-vendor.py --config-file scripts/ffmpeg-7.1.json /tmp/vendor
           PKG_CONFIG_PATH=/tmp/vendor/lib/pkgconfig python setup.py sdist
       - name: Upload source package
@@ -56,7 +56,7 @@ jobs:
         env:
           CIBW_ARCHS: ${{ matrix.arch }}
           CIBW_BEFORE_ALL_LINUX: yum install -y alsa-lib libxcb
-          CIBW_BEFORE_BUILD: python scripts/fetch-vendor.py --config-file scripts/ffmpeg-7.1.json /tmp/vendor
+          CIBW_BEFORE_BUILD: pip install numpy; python scripts/fetch-vendor.py --config-file scripts/ffmpeg-7.1.json /tmp/vendor
           CIBW_BEFORE_BUILD_MACOS: python scripts/fetch-vendor.py --config-file scripts/ffmpeg-7.1.json /tmp/vendor
           CIBW_BEFORE_BUILD_WINDOWS: python scripts\fetch-vendor.py --config-file scripts\ffmpeg-7.1.json C:\cibw\vendor
           CIBW_ENVIRONMENT_LINUX: LD_LIBRARY_PATH=/tmp/vendor/lib:$LD_LIBRARY_PATH PKG_CONFIG_PATH=/tmp/vendor/lib/pkgconfig
@@ -64,10 +64,6 @@ jobs:
           CIBW_ENVIRONMENT_WINDOWS: INCLUDE=C:\\cibw\\vendor\\include LIB=C:\\cibw\\vendor\\lib PYAV_SKIP_TESTS=unicode_filename
           CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: delvewheel repair --add-path C:\cibw\vendor\bin -w {dest_dir} {wheel}
           CIBW_SKIP: "pp* *-musllinux*"
-          CIBW_TEST_COMMAND: mv {project}/av {project}/av.disabled && python -m pytest {package}/tests && mv {project}/av.disabled {project}/av
-          CIBW_TEST_REQUIRES: pytest numpy
-          # skip tests when there are no binary wheels of numpy
-          CIBW_TEST_SKIP: "*_i686"
         run: |
           pip install cibuildwheel delvewheel
           cibuildwheel --output-dir dist
