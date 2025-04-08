@@ -57,6 +57,8 @@ cpdef cnp.ndarray[cnp.uint8_t, ndim=4] parallel_open(
     cdef int buffer_idx = 0
 
     seek_stream = interval_container.streams.video[0]
+    seek_stream.thread_type = 'AUTO'
+    seek_stream.thread_count = 1
     interval_container.seek(interval_min_pts+1, stream = seek_stream)
 
     for frame in interval_container.decode(video=0):            

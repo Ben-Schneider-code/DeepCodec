@@ -5,12 +5,11 @@ import time
 def main(video_path):
 
     video_path = str(video_path)
-    print(type(video_path))
     d = get_stats(video_path)
 
-    indices = list(range(0,d["num_frames"], 50))
+    indices = list(range(0,91500, 25))
 
-    for thread in [4,2]:
+    for thread in [8,4]:
         s = time.time()
         data = vfast_load(video_path, indices=indices, height=360, width=360, num_threads=thread)
         e = time.time()

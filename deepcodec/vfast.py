@@ -12,15 +12,14 @@ def wrap(inputs):
 
     return parallel_open(*inputs)
 
-def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num_threads=1):
+def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num_threads=1, d = None):
 
     assert height > 0, "currently we need these set up front to allocate the buffer"
     assert width > 0, "currently we need these set up front to allocate the buffer"
     
-    intervals, metadata, indices = compute_parellelized_intervals(video_path, indices, num_threads)
+    intervals, metadata, indices = compute_parellelized_intervals(video_path, indices, num_threads, d=d)
     batch_map = {y:x for (x,y) in enumerate(indices)}
 
-    # make this a fork
     ctx = mp.get_context("fork")
 
     inputs, data = [],[]
@@ -31,7 +30,8 @@ def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num
     with ProcessPoolExecutor(max_workers=len(intervals), mp_context=ctx) as executor:
         data = list(executor.map(wrap, inputs))
 
-    return np.concatenate(data, axis=0)
+    concat = np.concatenate(data, axis=0)
+    return concat
 
 def get_stats(video_path):
     container = open(video_path)
@@ -67,9 +67,11 @@ def get_stats(video_path):
         'num_frames': num_frames,
     }
 
-def compute_parellelized_intervals(video_path: str, indicies: list | None, num_threads: int = 1):
+def compute_parellelized_intervals(video_path: str, indicies: list | None, num_threads: int = 1, d : dict | None = None):
 
-    d: Dict = get_stats(video_path)
+    if d is None:
+        d = get_stats(video_path)
+
     assert type(num_threads) is int and num_threads > 0
 
     if indicies is None:
@@ -94,8 +96,6 @@ def compute_parellelized_intervals(video_path: str, indicies: list | None, num_t
     s.add(d["start"])
     s.add(d['end'])
     s = sorted(list(s))
-
-
 
     ret = []
     for i in range(len(s)-1):
@@ -122,3 +122,23 @@ def estimate_frame_location(pts: int, pts_start: int, pts_end: int, num_frames: 
     Convert the pts of a frame to its index location.
     """
     return round((num_frames-1)* pts / (pts_end-pts_start))
+
+class VideoReader:
+
+    def __init__(self,
+                video_path: str,
+                height: int = 224,
+                width: int = 224,
+                num_threads=4):
+        
+        self.video_path = video_path
+        self.num_threads = num_threads
+        self.height = height
+        self.width = width
+        self.video_metadata = get_stats(video_path)
+
+    def framecount(self) -> int:
+        return self.video_metadata['num_frames']
+    
+    def get_batch(self, indices: list[int]) -> np.Array:
+        return vfast_load(self.video_path, indices, self.height, self.width, self.num_threads, self.video_metadata)

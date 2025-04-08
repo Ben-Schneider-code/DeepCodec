@@ -26,7 +26,8 @@ from deepcodec.video.codeccontext import VideoCodecContext
 from deepcodec.video.format import VideoFormat
 from deepcodec.video.frame import VideoFrame
 from deepcodec.video.stream import VideoStream
-from deepcodec.vfast import get_stats, compute_parellelized_intervals
+from deepcodec.vfast import get_stats, compute_parellelized_intervals, VideoReader
+
 
 __all__ = (
     "__version__",
