@@ -2,7 +2,7 @@ import time
 import torch
 
 video_path = "/home/bsch/60min.mp4"
-hieght = 360
+height = 360
 width = 360
 max_num_threads = [8,4,2]
 indices = list(range(0,91500, 25))
@@ -35,7 +35,7 @@ for thread in max_num_threads:
         from deepcodec import VideoReader
         
         s = time.time()
-        vr = VideoReader(video_path, 360, 360, num_threads=thread)
+        vr = VideoReader(video_path, height, width, num_threads=thread)
         vr.get_batch(indices)
         e = time.time()
         print(f"DeepCodec took {e-s} with {thread} threads")
@@ -51,7 +51,7 @@ for thread in max_num_threads:
         from decord import cpu
 
         s = time.time()
-        vr = DecordVideoReader(video_path, ctx=cpu(0), num_threads=thread)
+        vr = DecordVideoReader(video_path, ctx=cpu(0), height=height, width=width, num_threads=thread)
         frames = vr.get_batch(indices)
         e = time.time()
 
