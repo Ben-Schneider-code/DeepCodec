@@ -1,4 +1,5 @@
 import time
+import torch
 
 video_path = "/home/bsch/60min.mp4"
 hieght = 360
@@ -9,7 +10,7 @@ indices = list(range(0,91500, 25))
 
 for thread in max_num_threads:
 
-    print(f"\n\n\n===== Testing with {thread} threads =====")
+    print(f"\n===== Testing with {thread} threads =====")
 
 
     # TorchCodec
@@ -48,8 +49,6 @@ for thread in max_num_threads:
         import decord
         from decord import VideoReader as DecordVideoReader
         from decord import cpu
-
-        decord.bridge.set_bridge("numpy")  # or torch if preferred
 
         s = time.time()
         vr = DecordVideoReader(video_path, ctx=cpu(0), num_threads=thread)
