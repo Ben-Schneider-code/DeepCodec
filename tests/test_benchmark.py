@@ -4,7 +4,7 @@ import torch
 video_path = "/home/bsch/60min.mp4"
 height = 360
 width = 360
-max_num_threads = [8,4,2]
+max_num_threads = [16,8,4,2]
 indices = list(range(0,91500, 25))
 
 
