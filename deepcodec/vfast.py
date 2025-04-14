@@ -67,6 +67,7 @@ def get_stats(video_path):
         'num_frames': num_frames,
         'height': video_stream.height,
         'width': video_stream.width,
+        'fps': video_stream.average_rate
     }
 
 def compute_parellelized_intervals(video_path: str, indicies: list | None, num_threads: int = 1, d : dict | None = None):
@@ -140,10 +141,13 @@ class VideoReader:
         self.width = width if width > 0 else self.video_metadata["width"]
 
     def framecount(self) -> int:
-        return self.video_metadata['num_frames']
-    
+        return self.video_metadata["num_frames"]
+
     def __len__(self) -> int:
-        return self.video_metadata['num_frames']
-    
+        return self.video_metadata["num_frames"]
+
+    def get_fps(self):
+        return self.video_metadata["fps"]
+
     def get_batch(self, indices: list[int]) -> np.Array:
         return vfast_load(self.video_path, indices, self.height, self.width, self.num_threads, self.video_metadata)
