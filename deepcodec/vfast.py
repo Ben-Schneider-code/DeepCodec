@@ -37,7 +37,7 @@ def get_stats(video_path):
     container = open(video_path)
     video_stream = container.streams.video[0]
     num_frames = video_stream.frames
-
+    
     assert num_frames > 0, "The metadata reported that the video stream has 0 frames"
 
     keyframes = []
@@ -65,6 +65,8 @@ def get_stats(video_path):
         'start': start_pts,
         'end': end_pts,
         'num_frames': num_frames,
+        'height': video_stream.height,
+        'width': video_stream.width,
     }
 
 def compute_parellelized_intervals(video_path: str, indicies: list | None, num_threads: int = 1, d : dict | None = None):
@@ -127,17 +129,20 @@ class VideoReader:
 
     def __init__(self,
                 video_path: str,
-                height: int = 224,
-                width: int = 224,
+                height: int = 0,
+                width: int = 0,
                 num_threads=4):
         
         self.video_path = video_path
         self.num_threads = num_threads
-        self.height = height
-        self.width = width
         self.video_metadata = get_stats(video_path)
+        self.height = height if height > 0 else self.video_metadata["height"]
+        self.width = width if width > 0 else self.video_metadata["width"]
 
     def framecount(self) -> int:
+        return self.video_metadata['num_frames']
+    
+    def __len__(self) -> int:
         return self.video_metadata['num_frames']
     
     def get_batch(self, indices: list[int]) -> np.Array:

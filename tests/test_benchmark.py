@@ -1,5 +1,4 @@
 import time
-import torch
 
 video_path = "/home/bsch/60min.mp4"
 height = 360
@@ -15,7 +14,7 @@ for thread in max_num_threads:
 
     # TorchCodec
     try:
-
+        import torch
         from torchcodec.decoders import VideoDecoder
 
         s = time.time()
@@ -35,10 +34,11 @@ for thread in max_num_threads:
         from deepcodec import VideoReader
         
         s = time.time()
-        vr = VideoReader(video_path, height, width, num_threads=thread)
-        vr.get_batch(indices)
+        vr = VideoReader(video_path, num_threads=thread)
+        b = vr.get_batch(indices)
         e = time.time()
         print(f"DeepCodec took {e-s} with {thread} threads")
+        print(f"Numpy array shape was {b.shape}")
 
     except Exception as e:
         print(e)
