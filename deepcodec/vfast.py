@@ -12,7 +12,7 @@ def wrap(inputs):
 
     return parallel_open(*inputs)
 
-def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num_threads=1, d = None):
+def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num_threads=1, d = None, spawn_method: str = "fork"):
 
     assert height > 0, "currently we need these set up front to allocate the buffer"
     assert width > 0, "currently we need these set up front to allocate the buffer"
@@ -20,7 +20,7 @@ def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num
     intervals, metadata, indices = compute_parellelized_intervals(video_path, indices, num_threads, d=d)
     batch_map = {y:x for (x,y) in enumerate(indices)}
 
-    ctx = mp.get_context("fork")
+    ctx = mp.get_context(spawn_method)
 
     inputs, data = [],[]
 
@@ -139,6 +139,7 @@ class VideoReader:
         self.video_metadata = get_stats(video_path)
         self.height = height if height > 0 else self.video_metadata["height"]
         self.width = width if width > 0 else self.video_metadata["width"]
+        self.spawn_method = "fork"
 
     def framecount(self) -> int:
         return self.video_metadata["num_frames"]
@@ -150,4 +151,4 @@ class VideoReader:
         return self.video_metadata["fps"]
 
     def get_batch(self, indices: list[int]) -> np.Array:
-        return vfast_load(self.video_path, indices, self.height, self.width, self.num_threads, self.video_metadata)
+        return vfast_load(self.video_path, indices, self.height, self.width, self.num_threads, self.video_metadata, self.spawn_method)
