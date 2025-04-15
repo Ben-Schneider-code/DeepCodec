@@ -10,10 +10,17 @@ def remove_shm_from_resource_tracker():
     Monkey-patch multiprocessing.resource_tracker so SharedMemory won't be tracked.
     Prevents the resource tracker from freeing our shared memory on process exit.
     That responsibility is left to the process that created the shared memory.
-    Which you would expect as the default behaviour but python's parellel processing libraries suck.
+    Which you would expect as the default behaviour but python's parellel processing libraries suck
     More details at:
     https://stackoverflow.com/questions/77285558/why-does-python-shared-memory-implicitly-unlinked-on-exit
     https://bugs.python.org/issue38119
+
+    python 3.13 adds the more elegant "track" flag on SharedMemory
+    see:
+    https://github.com/python/cpython/pull/21516
+    https://docs.python.org/3.13/library/multiprocessing.shared_memory.html
+
+    Can switch to that when people update to python 3.13 in 2070.
     """
 
     def fix_register(name, rtype):
