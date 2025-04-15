@@ -48,7 +48,6 @@ def mp_entrypoint():
     frames_to_save = sys.argv[3]
     interval_min_pts = int(sys.argv[4])
     interval_max_pts = int(sys.argv[5])
-    buffer_size = int(sys.argv[6])
     height = int(sys.argv[7])
     width = int(sys.argv[8])
     num_frames = int(sys.argv[9])
@@ -80,7 +79,6 @@ def mp_entrypoint():
         frames_to_save,
         interval_min_pts,
         interval_max_pts,
-        buffer_size,
         height,
         width,
         num_frames,

@@ -8,7 +8,7 @@ import os
 import base64
 import pickle
 
-def vfast_load(video_path, indices: list | None = None, height=0, width=0, num_threads=1, d=None, spawn_method: str = "fork"):
+def vfast_load(video_path, indices: list | None = None, height=0, width=0, num_threads=1, d=None):
     assert height > 0, "currently we need these set up front to allocate the buffer"
     assert width > 0, "currently we need these set up front to allocate the buffer"
     
@@ -33,7 +33,6 @@ def vfast_load(video_path, indices: list | None = None, height=0, width=0, num_t
                                         pickled,
                                         str(x),
                                         str(y),
-                                        str(buffer_size),
                                         str(height),
                                         str(width),
                                         str(metadata["num_frames"]),
@@ -158,7 +157,6 @@ class VideoReader:
         self.video_metadata = get_stats(video_path)
         self.height = height if height > 0 else self.video_metadata["height"]
         self.width = width if width > 0 else self.video_metadata["width"]
-        self.spawn_method = "fork"
 
     def framecount(self) -> int:
         return self.video_metadata["num_frames"]
@@ -170,4 +168,4 @@ class VideoReader:
         return self.video_metadata["fps"]
 
     def get_batch(self, indices: list[int]) -> np.Array:
-        return vfast_load(self.video_path, indices, self.height, self.width, self.num_threads, self.video_metadata, self.spawn_method)
+        return vfast_load(self.video_path, indices, self.height, self.width, self.num_threads, self.video_metadata)

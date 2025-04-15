@@ -43,7 +43,6 @@ cpdef parallel_open(
     dict[int, int] frames_to_save,
     int interval_min_pts,
     int interval_max_pts,
-    int buffer_size,
     int height,
     int width,
     int num_frames,
@@ -80,7 +79,7 @@ cpdef parallel_open(
             buffer_idx = frames_to_save[frame_location]
             arr = np.transpose(frame.to_ndarray(format='rgb24', width=width, height=height), (2, 0, 1))
             shared_array[buffer_idx] = arr
-                
+
     shm.close()
     return 1
 

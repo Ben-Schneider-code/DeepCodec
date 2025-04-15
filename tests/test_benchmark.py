@@ -38,7 +38,7 @@ def main():
             vr = VideoReader(video_path, num_threads=thread)
             b = vr.get_batch(indices)
             e = time.time()
-            print(f"DeepCodec [spawn] took {e-s} with {thread} threads")
+            print(f"DeepCodec took {e-s} with {thread} threads")
             print(b.shape)
 
         except Exception as e:
