@@ -4,6 +4,7 @@ cimport numpy as cnp
 from libc.stdint cimport int64_t
 from cython.parallel import prange
 import os
+from multiprocessing import shared_memory
 import time
 from enum import Flag, IntEnum
 from pathlib import Path
@@ -36,8 +37,9 @@ cdef inline int estimate_frame_location(int pts, int pts_start, int pts_end, int
     # be careful about overflows here
     return round((num_frames - 1) * (pts / (pts_end - pts_start)))
     
-cpdef cnp.ndarray[cnp.uint8_t, ndim=4] parallel_open(
-    file,
+cpdef parallel_open(
+    filename : str,
+    shm_buf_con: str, 
     dict[int, int] frames_to_save,
     int interval_min_pts,
     int interval_max_pts,
@@ -49,12 +51,13 @@ cpdef cnp.ndarray[cnp.uint8_t, ndim=4] parallel_open(
     int world_size,
     int global_min_pts,
     int global_max_pts
-):      
-    cdef InputContainer interval_container = open(file)
+):  
+    cdef InputContainer interval_container = open(filename)
 
-    # allocate buffer of shape B,C,H,W
-    cdef cnp.ndarray[cnp.uint8_t, ndim=4] np_buffer = np.empty((buffer_size, 3, height, width), dtype=np.uint8)
-    cdef int buffer_idx = 0
+    # buffer of shape B,C,H,W
+    shape = (len(frames_to_save),3,height,width)
+    shm = shared_memory.SharedMemory(name=shm_buf_con, create=False)
+    shared_array = np.ndarray(shape, dtype=np.uint8, buffer=shm.buf)
 
     seek_stream = interval_container.streams.video[0]
     seek_stream.thread_type = 'AUTO'
@@ -74,12 +77,14 @@ cpdef cnp.ndarray[cnp.uint8_t, ndim=4] parallel_open(
 
         # resize frame and add it to list
         if frame_location in frames_to_save:
-            np_buffer[buffer_idx] = np.transpose(frame.to_ndarray(format='rgb24', width=width, height=height), (2, 0, 1))
-            buffer_idx += 1
+            buffer_idx = frames_to_save[frame_location]
+            arr = np.transpose(frame.to_ndarray(format='rgb24', width=width, height=height), (2, 0, 1))
+            shared_array[buffer_idx] = arr
+            print(f"buffer idx is {buffer_idx} frame shape is {arr.shape} saving it into {shared_array.shape}")
 
-    #assert buffer_idx == buffer_size, f"rank: {rank} buffer_idx was {buffer_idx} and buffer_size was {buffer_size}"
-    return np_buffer
-
+    
+    shm.close()
+    return 1
 
 # We want to use the monotonic clock if it is available.
 cdef object clock = getattr(time, "monotonic", time.time)

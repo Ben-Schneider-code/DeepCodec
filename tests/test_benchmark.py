@@ -1,11 +1,12 @@
 import time
+import traceback
+
 def main():
     video_path = "/home/bsch/20min.mp4"
     height = 360
-    width = 360
-    max_num_threads = [16,8,4,2]
+    width = 224
+    max_num_threads = [8,4,2]
     indices = list(range(0,91500, 25))
-
 
     for thread in max_num_threads:
 
@@ -29,35 +30,18 @@ def main():
             print(e)
             print("TorchCodec error")
 
-        #DeepCodec [fork]
         try:
             from deepcodec import VideoReader
-            
-            s = time.time()
+    
             vr = VideoReader(video_path, num_threads=thread)
-            vr.spawn_method = "fork"
-            b = vr.get_batch(indices)
-            e = time.time()
-            print(f"DeepCodec [fork] took {e-s} with {thread} threads")
-            print(f"Numpy array shape was {b.shape}")
-
-        except Exception as e:
-            print(e)
-            print("DeepCodec error")
-
-        #DeepCodec [spawn]
-        try:
-            from deepcodec import VideoReader
-            
             s = time.time()
-            vr = VideoReader(video_path, num_threads=thread)
-            vr.spawn_method = "spawn"
             b = vr.get_batch(indices)
             e = time.time()
             print(f"DeepCodec [spawn] took {e-s} with {thread} threads")
-            print(f"Numpy array shape was {b.shape}")
+            print(b.shape)
 
         except Exception as e:
+            print(traceback.format_exc())
             print(e)
             print("DeepCodec error")        
 

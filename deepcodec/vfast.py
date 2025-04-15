@@ -1,37 +1,60 @@
 from .container import open, parallel_open
 import bisect
 from typing import Set, Dict
+from multiprocessing import shared_memory
 import numpy as np
-import multiprocessing as mp
-from concurrent.futures import ProcessPoolExecutor
+import subprocess
 import os
+import base64
+import pickle
 
-def wrap(inputs):
-    if inputs[4] == 0:
-        return None
-
-    return parallel_open(*inputs)
-
-def vfast_load(video_path, indices: list | None = None, height=0,  width=0,  num_threads=1, d = None, spawn_method: str = "fork"):
-
+def vfast_load(video_path, indices: list | None = None, height=0, width=0, num_threads=1, d=None, spawn_method: str = "fork"):
     assert height > 0, "currently we need these set up front to allocate the buffer"
     assert width > 0, "currently we need these set up front to allocate the buffer"
     
     intervals, metadata, indices = compute_parellelized_intervals(video_path, indices, num_threads, d=d)
-    batch_map = {y:x for (x,y) in enumerate(indices)}
+    batch_map = {y: x for (x, y) in enumerate(indices)}
+    processes = []
+    pickled = pickle.dumps(batch_map, protocol=5)
+    pickled = base64.b64encode(pickled).decode('utf-8')
+    shape = (len(batch_map), 3, height, width)
+    my_dtype = np.uint8
+    nbytes = np.dtype(my_dtype).itemsize * np.prod(shape)
 
-    ctx = mp.get_context(spawn_method)
+    arr = np.zeros(shape, dtype=my_dtype)
+    #shm_name = "deepcodec_shm"
+    shm = None
+    try:
+        shm = shared_memory.SharedMemory(create=True, size=arr.size)
+        shared_array = np.ndarray(shape, dtype=my_dtype, buffer=shm.buf)
 
-    inputs, data = [],[]
+        for rank, (x, y, buffer_size) in enumerate(intervals):
+            process = subprocess.Popen(["deepcodec",
+                                        video_path,
+                                        shm.name,
+                                        pickled,
+                                        str(x),
+                                        str(y),
+                                        str(buffer_size),
+                                        str(height),
+                                        str(width),
+                                        str(metadata["num_frames"]),
+                                        str(rank),
+                                        str(len(intervals)),
+                                        str(metadata["start"]),
+                                        str(metadata["end"])])
+            processes.append(process)
+        for wait_process in processes:
+            wait_process.wait()
+        
+        np.copyto(arr, shared_array)
+        print(arr)
+    finally:
 
-    for rank, (x,y, buffer_size) in enumerate(intervals):
-        inputs.append((video_path, batch_map,x,y,buffer_size, height, width, metadata["num_frames"],rank, len(intervals), metadata["start"], metadata["end"]))
-
-    with ProcessPoolExecutor(max_workers=len(intervals), mp_context=ctx) as executor:
-        data = list(executor.map(wrap, inputs))
-
-    concat = np.concatenate(data, axis=0)
-    return concat
+        if shm is not None:
+            shm.close()
+            shm.unlink()
+    return arr
 
 def get_stats(video_path):
     container = open(video_path)

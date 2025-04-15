@@ -39,7 +39,7 @@ zip-safe = false
 version = {attr = "deepcodec.about.__version__"}
 
 [project.scripts]
-"pyav" = "deepcodec.__main__:main"
+"deepcodec" = "deepcodec.__main__:mp_entrypoint"
 
 [tool.isort]
 profile = "black"
