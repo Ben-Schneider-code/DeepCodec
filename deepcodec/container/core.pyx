@@ -80,9 +80,7 @@ cpdef parallel_open(
             buffer_idx = frames_to_save[frame_location]
             arr = np.transpose(frame.to_ndarray(format='rgb24', width=width, height=height), (2, 0, 1))
             shared_array[buffer_idx] = arr
-            print(f"buffer idx is {buffer_idx} frame shape is {arr.shape} saving it into {shared_array.shape}")
-
-    
+                
     shm.close()
     return 1
 

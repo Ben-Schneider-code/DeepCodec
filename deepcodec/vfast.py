@@ -19,11 +19,9 @@ def vfast_load(video_path, indices: list | None = None, height=0, width=0, num_t
     pickled = base64.b64encode(pickled).decode('utf-8')
     shape = (len(batch_map), 3, height, width)
     my_dtype = np.uint8
-    nbytes = np.dtype(my_dtype).itemsize * np.prod(shape)
-
     arr = np.zeros(shape, dtype=my_dtype)
-    #shm_name = "deepcodec_shm"
     shm = None
+    
     try:
         shm = shared_memory.SharedMemory(create=True, size=arr.size)
         shared_array = np.ndarray(shape, dtype=my_dtype, buffer=shm.buf)
@@ -48,9 +46,7 @@ def vfast_load(video_path, indices: list | None = None, height=0, width=0, num_t
             wait_process.wait()
         
         np.copyto(arr, shared_array)
-        print(arr)
     finally:
-
         if shm is not None:
             shm.close()
             shm.unlink()
