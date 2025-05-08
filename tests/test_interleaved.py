@@ -38,7 +38,6 @@ for it, data in enumerate(iter(vr2)):
 
     idx += vr2.frame_iter
 
-
-
+assert vr2.all_loaded, "all frames have not been loaded"
 
 print("DONE")

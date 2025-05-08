@@ -284,6 +284,11 @@ class InterleavedVideoReader:
             shm.close()
             shm.unlink()
 
+    def all_loaded(self):
+        shm = shared_memory.SharedMemory(name=self.check_handle, create=False)
+        lock_array = np.ndarray(self.check_shape, dtype=np.uint8, buffer=shm.buf)
+        return np.all(lock_array == 1)
+
     def get_frames(self, start, end):
         
         while True:
