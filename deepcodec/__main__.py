@@ -48,17 +48,17 @@ def mp_entrypoint():
     frames_to_save = sys.argv[3]
     interval_min_pts = int(sys.argv[4])
     interval_max_pts = int(sys.argv[5])
-    height = int(sys.argv[7])
-    width = int(sys.argv[8])
-    num_frames = int(sys.argv[9])
-    rank = int(sys.argv[10])
-    world_size = int(sys.argv[11])
-    global_min_pts = int(sys.argv[12])
-    global_max_pts = int(sys.argv[13])
+    height = int(sys.argv[6])
+    width = int(sys.argv[7])
+    num_frames = int(sys.argv[8])
+    rank = int(sys.argv[9])
+    world_size = int(sys.argv[10])
+    global_min_pts = int(sys.argv[11])
+    global_max_pts = int(sys.argv[12])
+    interpolation  = sys.argv[13]
 
     pickled = base64.b64decode(frames_to_save.encode('utf-8'))
     frames_to_save = pickle.loads(pickled)
-    
     # print(filename)
     # print(shm_buf_con)
     # print(frames_to_save)
@@ -72,7 +72,6 @@ def mp_entrypoint():
     # print(world_size)
     # print(global_min_pts)
     # print(global_max_pts)
-
     parallel_open(
         filename,
         shm_buf_con,
@@ -86,7 +85,53 @@ def mp_entrypoint():
         world_size,
         global_min_pts,
         global_max_pts,
+        interpolation
     )
+
+def mp_interleaved_entrypoint():
+    import sys
+    remove_shm_from_resource_tracker()
+    from deepcodec.container import interleaved_parallel_open
+
+    # Parse args
+    filename = sys.argv[1]
+    shm_buf_con = sys.argv[2]
+    frames_to_save = sys.argv[3]
+    interval_list_of_lists = sys.argv[4]
+    height = int(sys.argv[5])
+    width = int(sys.argv[6])
+    num_frames = int(sys.argv[7])
+    rank = int(sys.argv[8])
+    world_size = int(sys.argv[9])
+    global_min_pts = int(sys.argv[10])
+    global_max_pts = int(sys.argv[11])
+    interpolation  = sys.argv[12]
+    shm_check_buf  = sys.argv[13]
+
+    pickled = base64.b64decode(frames_to_save.encode('utf-8'))
+    frames_to_save = pickle.loads(pickled)
+    
+    interval_list_of_lists = base64.b64decode(interval_list_of_lists.encode('utf-8'))
+    interval_list_of_lists = pickle.loads(interval_list_of_lists)
+
+    interleaved_parallel_open(
+        filename,
+        shm_buf_con,
+        frames_to_save,
+        0,
+        0,
+        height,
+        width,
+        num_frames,
+        rank,
+        world_size,
+        global_min_pts,
+        global_max_pts,
+        interpolation,
+        shm_check_buf,
+        interval_list_of_lists[rank]
+    )
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()

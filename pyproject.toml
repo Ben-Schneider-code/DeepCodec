@@ -40,6 +40,7 @@ version = {attr = "deepcodec.about.__version__"}
 
 [project.scripts]
 "deepcodec" = "deepcodec.__main__:mp_entrypoint"
+"deepcodec_interleaved" = "deepcodec.__main__:mp_interleaved_entrypoint"
 
 [tool.isort]
 profile = "black"

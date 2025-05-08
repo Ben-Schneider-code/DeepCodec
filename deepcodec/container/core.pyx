@@ -49,7 +49,8 @@ cpdef parallel_open(
     int rank,
     int world_size,
     int global_min_pts,
-    int global_max_pts
+    int global_max_pts,
+    interpolation: str,
 ):  
     cdef InputContainer interval_container = open(filename)
 
@@ -77,9 +78,64 @@ cpdef parallel_open(
         # resize frame and add it to list
         if frame_location in frames_to_save:
             buffer_idx = frames_to_save[frame_location]
-            arr = np.transpose(frame.to_ndarray(format='rgb24', width=width, height=height), (2, 0, 1))
+            arr = np.transpose(frame.to_ndarray(format='rgb24', width=width, height=height, interpolation=interpolation), (2, 0, 1))
             shared_array[buffer_idx] = arr
 
+    shm.close()
+    return 1
+
+
+cpdef interleaved_parallel_open(
+    filename : str,
+    shm_buf_con: str, 
+    dict[int, int] frames_to_save,
+    int _,
+    int __,
+    int height,
+    int width,
+    int num_frames,
+    int rank,
+    int world_size,
+    int global_min_pts,
+    int global_max_pts,
+    interpolation: str,
+    shm_check_buf: str,
+    list intervals
+):  
+    cdef InputContainer interval_container = open(filename)
+
+    # buffer of shape B,C,H,W
+    shape = (len(frames_to_save),3,height,width)
+    shm = shared_memory.SharedMemory(name=shm_buf_con, create=False)
+    shared_array = np.ndarray(shape, dtype=np.uint8, buffer=shm.buf)
+
+    shm_check = shared_memory.SharedMemory(name=shm_check_buf, create=False)
+    shared_check = np.ndarray(len(frames_to_save), dtype=np.uint8, buffer=shm_check.buf)
+    seek_stream = interval_container.streams.video[0]
+    seek_stream.thread_type = 'AUTO'
+    seek_stream.thread_count = 1
+    
+    for (interval_min_pts, interval_max_pts, _) in intervals:
+        interval_container.seek(interval_min_pts+1, stream = seek_stream)
+
+        for frame in interval_container.decode(video=0):            
+            if frame.pts < interval_min_pts:
+                continue
+
+            # if the container is for the end of the stream
+            # break using the iterator to ensure the last frame is returned
+            if frame.pts >= interval_max_pts and interval_max_pts != global_max_pts:
+                break
+            
+            frame_location = estimate_frame_location(frame.pts, global_min_pts, global_max_pts, num_frames)
+            # resize frame and add it to list
+            if frame_location in frames_to_save:
+                buffer_idx = frames_to_save[frame_location]
+                arr = np.transpose(frame.to_ndarray(format='rgb24', width=width, height=height, interpolation=interpolation), (2, 0, 1))
+                shared_array[buffer_idx] = arr
+                shared_check[buffer_idx] = 1
+                
+    shm_check.close()
     shm.close()
     return 1
 
@@ -93,6 +149,7 @@ cdef int interrupt_cb (void *p) noexcept nogil:
 
     cdef double current_time
     with gil:
+
         current_time = clock()
 
         # Check if the clock has been changed.
