@@ -1,9 +1,9 @@
-import deepcodec
+import quickcodec
 
 from .common import TestCase, fate_suite
 
 
-def timestamp_to_frame(timestamp: int, stream: deepcodec.video.stream.VideoStream) -> float:
+def timestamp_to_frame(timestamp: int, stream: quickcodec.video.stream.VideoStream) -> float:
     fps = stream.average_rate
     time_base = stream.time_base
     start_time = stream.start_time
@@ -13,17 +13,17 @@ def timestamp_to_frame(timestamp: int, stream: deepcodec.video.stream.VideoStrea
 
 class TestSeek(TestCase):
     def test_seek_float(self) -> None:
-        container = deepcodec.open(fate_suite("h264/interlaced_crop.mp4"))
+        container = quickcodec.open(fate_suite("h264/interlaced_crop.mp4"))
         self.assertRaises(TypeError, container.seek, 1.0)
 
     def test_seek_int64(self) -> None:
         # Assert that it accepts large values.
         # Issue 251 pointed this out.
-        container = deepcodec.open(fate_suite("h264/interlaced_crop.mp4"))
+        container = quickcodec.open(fate_suite("h264/interlaced_crop.mp4"))
         container.seek(2**32)
 
     def test_seek_start(self) -> None:
-        container = deepcodec.open(fate_suite("h264/interlaced_crop.mp4"))
+        container = quickcodec.open(fate_suite("h264/interlaced_crop.mp4"))
 
         # count all the packets
         total_packet_count = 0
@@ -41,7 +41,7 @@ class TestSeek(TestCase):
         assert total_packet_count == seek_packet_count
 
     def test_seek_middle(self) -> None:
-        container = deepcodec.open(fate_suite("h264/interlaced_crop.mp4"))
+        container = quickcodec.open(fate_suite("h264/interlaced_crop.mp4"))
         assert container.duration is not None
 
         # count all the packets
@@ -59,7 +59,7 @@ class TestSeek(TestCase):
         assert seek_packet_count < total_packet_count
 
     def test_seek_end(self) -> None:
-        container = deepcodec.open(fate_suite("h264/interlaced_crop.mp4"))
+        container = quickcodec.open(fate_suite("h264/interlaced_crop.mp4"))
         assert container.duration is not None
 
         # seek to middle
@@ -81,7 +81,7 @@ class TestSeek(TestCase):
         assert seek_packet_count < middle_packet_count
 
     def test_decode_half(self) -> None:
-        container = deepcodec.open(fate_suite("h264/interlaced_crop.mp4"))
+        container = quickcodec.open(fate_suite("h264/interlaced_crop.mp4"))
         video_stream = container.streams.video[0]
 
         total_frame_count = 0
@@ -94,7 +94,7 @@ class TestSeek(TestCase):
         # set target frame to middle frame
         target_frame = total_frame_count // 2
         target_timestamp = int(
-            (target_frame * deepcodec.time_base) / video_stream.average_rate
+            (target_frame * quickcodec.time_base) / video_stream.average_rate
         )
 
         # should seek to nearest keyframe before target_timestamp
@@ -116,7 +116,7 @@ class TestSeek(TestCase):
         assert frame_count == total_frame_count - target_frame
 
     def test_stream_seek(self) -> None:
-        container = deepcodec.open(fate_suite("h264/interlaced_crop.mp4"))
+        container = quickcodec.open(fate_suite("h264/interlaced_crop.mp4"))
         video_stream = container.streams.video[0]
 
         assert video_stream.time_base is not None

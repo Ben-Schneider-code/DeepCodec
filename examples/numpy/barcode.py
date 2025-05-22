@@ -1,11 +1,11 @@
 import numpy as np
 from PIL import Image
 
-import deepcodec
-import deepcodec.datasets
+import quickcodec
+import quickcodec.datasets
 
-container = deepcodec.open(
-    deepcodec.datasets.curated("pexels/time-lapse-video-of-sunset-by-the-sea-854400.mp4")
+container = quickcodec.open(
+    quickcodec.datasets.curated("pexels/time-lapse-video-of-sunset-by-the-sea-854400.mp4")
 )
 container.streams.video[0].thread_type = "AUTO"  # Go faster!
 

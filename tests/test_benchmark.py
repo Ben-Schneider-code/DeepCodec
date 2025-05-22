@@ -1,6 +1,6 @@
 import time
 import traceback
-from deepcodec import VideoReader as DCVR
+from quickcodec import VideoReader as DCVR
 
 def main():
     video_path = "/home/bsch/20min.mp4"
@@ -33,17 +33,17 @@ def main():
             print("TorchCodec error")
 
         try:
-            from deepcodec import VideoReader
+            from quickcodec import VideoReader
             s = time.time()
             vr = VideoReader(video_path, num_threads=thread)
             b = vr.get_batch(indices)
             e = time.time()
-            print(f"DeepCodec took {e-s} with {thread} threads")
+            print(f"quickcodec took {e-s} with {thread} threads")
             print(b.shape)
 
         except Exception as e:
             print(e)
-            print("DeepCodec error")        
+            print("quickcodec error")        
 
         # Decord
         try:

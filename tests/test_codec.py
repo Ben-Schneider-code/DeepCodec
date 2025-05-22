@@ -1,7 +1,7 @@
 import pytest
 
-from deepcodec import AudioFormat, Codec, VideoFormat, codecs_available
-from deepcodec.codec.codec import UnknownCodecError
+from quickcodec import AudioFormat, Codec, VideoFormat, codecs_available
+from quickcodec.codec.codec import UnknownCodecError
 
 
 def test_codec_bogus() -> None:

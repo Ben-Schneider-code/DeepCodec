@@ -1,6 +1,6 @@
 import pytest
 
-from deepcodec.dictionary import Dictionary
+from quickcodec.dictionary import Dictionary
 
 
 def test_dictionary() -> None:

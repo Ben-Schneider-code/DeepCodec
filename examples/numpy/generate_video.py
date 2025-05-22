@@ -1,12 +1,12 @@
 import numpy as np
 
-import deepcodec
+import quickcodec
 
 duration = 4
 fps = 24
 total_frames = duration * fps
 
-container = deepcodec.open("test.mp4", mode="w")
+container = quickcodec.open("test.mp4", mode="w")
 
 stream = container.add_stream("mpeg4", rate=fps)
 stream.width = 480
@@ -21,7 +21,7 @@ for frame_i in range(total_frames):
 
     img = np.round(255 * img).astype(np.uint8)
 
-    frame = deepcodec.VideoFrame.from_ndarray(img, format="rgb24")
+    frame = quickcodec.VideoFrame.from_ndarray(img, format="rgb24")
     for packet in stream.encode(frame):
         container.mux(packet)
 

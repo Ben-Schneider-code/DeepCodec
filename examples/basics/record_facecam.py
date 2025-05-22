@@ -1,6 +1,6 @@
-import deepcodec
+import quickcodec
 
-deepcodec.logging.set_level(deepcodec.logging.VERBOSE)
+quickcodec.logging.set_level(quickcodec.logging.VERBOSE)
 
 
 """
@@ -11,17 +11,17 @@ You may need to change the file "0". Use this command to list all devices:
 
 """
 
-input_ = deepcodec.open(
+input_ = quickcodec.open(
     "0",
     format="avfoundation",
     container_options={"framerate": "30", "video_size": "1920x1080"},
 )
-output = deepcodec.open("out.mkv", "w")
+output = quickcodec.open("out.mkv", "w")
 
 # Prefer x264, but use Apple hardware if not available.
 try:
-    encoder = deepcodec.Codec("libx264", "w").name
-except deepcodec.FFmpegError:
+    encoder = quickcodec.Codec("libx264", "w").name
+except quickcodec.FFmpegError:
     encoder = "h264_videotoolbox"
 
 output_stream = output.add_stream(encoder, rate=30)
@@ -35,7 +35,7 @@ try:
             for frame in input_.decode(video=0):
                 packet = output_stream.encode(frame)
                 output.mux(packet)
-        except deepcodec.BlockingIOError:
+        except quickcodec.BlockingIOError:
             pass
 except KeyboardInterrupt:
     print("Recording stopped by user")

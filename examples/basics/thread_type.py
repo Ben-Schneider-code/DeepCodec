@@ -1,12 +1,12 @@
 import time
 
-import deepcodec
-import deepcodec.datasets
+import quickcodec
+import quickcodec.datasets
 
 print("Decoding with default (slice) threading...")
 
-container = deepcodec.open(
-    deepcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4")
+container = quickcodec.open(
+    quickcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4")
 )
 
 start_time = time.time()
@@ -21,8 +21,8 @@ container.close()
 
 print("Decoding with auto threading...")
 
-container = deepcodec.open(
-    deepcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4")
+container = quickcodec.open(
+    quickcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4")
 )
 
 # !!! This is the only difference.

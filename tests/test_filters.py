@@ -3,10 +3,10 @@ from fractions import Fraction
 
 import numpy as np
 
-import deepcodec
-from deepcodec import AudioFrame, VideoFrame
-from deepcodec.audio.frame import format_dtypes
-from deepcodec.filter import Filter, Graph
+import quickcodec
+from quickcodec import AudioFrame, VideoFrame
+from quickcodec.audio.frame import format_dtypes
+from quickcodec.filter import Filter, Graph
 
 from .common import TestCase, has_pillow
 
@@ -34,12 +34,12 @@ def generate_audio_frame(
     return frame
 
 
-def pull_until_blocked(graph: Graph) -> list[deepcodec.VideoFrame]:
-    frames: list[deepcodec.VideoFrame] = []
+def pull_until_blocked(graph: Graph) -> list[quickcodec.VideoFrame]:
+    frames: list[quickcodec.VideoFrame] = []
     while True:
         try:
             frames.append(graph.vpull())
-        except deepcodec.FFmpegError as e:
+        except quickcodec.FFmpegError as e:
             if e.errno != errno.EAGAIN:
                 raise
             return frames
@@ -104,7 +104,7 @@ class TestFilters(TestCase):
         graph.configure()
 
         frame = src.pull()
-        assert isinstance(frame, deepcodec.VideoFrame)
+        assert isinstance(frame, quickcodec.VideoFrame)
 
         if has_pillow:
             frame.to_image().save(self.sandboxed("mandelbrot4.png"))
@@ -148,7 +148,7 @@ class TestFilters(TestCase):
             )
         )
         out_frame = graph.pull()
-        assert isinstance(out_frame, deepcodec.AudioFrame)
+        assert isinstance(out_frame, quickcodec.AudioFrame)
         assert out_frame.format.name == "s16"
         assert out_frame.layout.name == "stereo"
         assert out_frame.sample_rate == 44100
@@ -207,10 +207,10 @@ class TestFilters(TestCase):
         assert np.allclose(input_data * 0.5, output_data)
 
     def test_video_buffer(self):
-        input_container = deepcodec.open(format="lavfi", file="color=c=pink:duration=1:r=30")
+        input_container = quickcodec.open(format="lavfi", file="color=c=pink:duration=1:r=30")
         input_video_stream = input_container.streams.video[0]
 
-        graph = deepcodec.filter.Graph()
+        graph = quickcodec.filter.Graph()
         buffer = graph.add_buffer(template=input_video_stream)
         bwdif = graph.add("bwdif", "send_field:tff:all")
         buffersink = graph.add("buffersink")
@@ -237,10 +237,10 @@ class TestFilters(TestCase):
                 assert filtered_frames[1].time_base == Fraction(1, 60)
 
     def test_EOF(self) -> None:
-        input_container = deepcodec.open(format="lavfi", file="color=c=pink:duration=1:r=30")
+        input_container = quickcodec.open(format="lavfi", file="color=c=pink:duration=1:r=30")
         video_stream = input_container.streams.video[0]
 
-        graph = deepcodec.filter.Graph()
+        graph = quickcodec.filter.Graph()
         video_in = graph.add_buffer(template=video_stream)
         palette_gen_filter = graph.add("palettegen")
         video_out = graph.add("buffersink")
@@ -256,6 +256,6 @@ class TestFilters(TestCase):
         # if we do not push None, we get a BlockingIOError
         palette_frame = graph.vpull()
 
-        assert isinstance(palette_frame, deepcodec.VideoFrame)
+        assert isinstance(palette_frame, quickcodec.VideoFrame)
         assert palette_frame.width == 16
         assert palette_frame.height == 16

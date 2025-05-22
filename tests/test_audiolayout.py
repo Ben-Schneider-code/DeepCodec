@@ -1,4 +1,4 @@
-from deepcodec import AudioLayout
+from quickcodec import AudioLayout
 
 
 def _test_stereo(layout: AudioLayout) -> None:

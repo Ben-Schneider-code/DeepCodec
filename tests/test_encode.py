@@ -5,10 +5,10 @@ from fractions import Fraction
 import numpy as np
 import pytest
 
-import deepcodec
-from deepcodec import AudioFrame, VideoFrame
-from deepcodec.audio.stream import AudioStream
-from deepcodec.video.stream import VideoStream
+import quickcodec
+from quickcodec import AudioFrame, VideoFrame
+from quickcodec.audio.stream import AudioStream
+from quickcodec.video.stream import VideoStream
 
 from .common import TestCase, fate_suite, has_pillow
 
@@ -17,7 +17,7 @@ HEIGHT = 240
 DURATION = 48
 
 
-def write_rgb_rotate(output: deepcodec.container.OutputContainer) -> None:
+def write_rgb_rotate(output: quickcodec.container.OutputContainer) -> None:
     if not has_pillow:
         pytest.skip()
 
@@ -66,7 +66,7 @@ def write_rgb_rotate(output: deepcodec.container.OutputContainer) -> None:
 
 
 def assert_rgb_rotate(
-    self, input_: deepcodec.container.InputContainer, is_dash: bool = False
+    self, input_: quickcodec.container.InputContainer, is_dash: bool = False
 ) -> None:
     # Now inspect it a little.
     assert len(input_.streams) == 1
@@ -113,7 +113,7 @@ def assert_rgb_rotate(
 
 class TestBasicVideoEncoding(TestCase):
     def test_default_options(self) -> None:
-        with deepcodec.open(self.sandboxed("output.mov"), "w") as output:
+        with quickcodec.open(self.sandboxed("output.mov"), "w") as output:
             stream = output.add_stream("mpeg4")
             assert stream in output.streams.video
             assert stream.average_rate == Fraction(24, 1)
@@ -130,15 +130,15 @@ class TestBasicVideoEncoding(TestCase):
     def test_encoding(self) -> None:
         path = self.sandboxed("rgb_rotate.mov")
 
-        with deepcodec.open(path, "w") as output:
+        with quickcodec.open(path, "w") as output:
             write_rgb_rotate(output)
-        with deepcodec.open(path) as input:
+        with quickcodec.open(path) as input:
             assert_rgb_rotate(self, input)
 
     def test_encoding_with_pts(self) -> None:
         path = self.sandboxed("video_with_pts.mov")
 
-        with deepcodec.open(path, "w") as output:
+        with quickcodec.open(path, "w") as output:
             stream = output.add_stream("h264", 24)
             assert stream in output.streams.video
             stream.width = WIDTH
@@ -161,15 +161,15 @@ class TestBasicVideoEncoding(TestCase):
     def test_encoding_with_unicode_filename(self) -> None:
         path = self.sandboxed("¢∞§¶•ªº.mov")
 
-        with deepcodec.open(path, "w") as output:
+        with quickcodec.open(path, "w") as output:
             write_rgb_rotate(output)
-        with deepcodec.open(path) as input:
+        with quickcodec.open(path) as input:
             assert_rgb_rotate(self, input)
 
 
 class TestBasicAudioEncoding(TestCase):
     def test_default_options(self) -> None:
-        with deepcodec.open(self.sandboxed("output.mov"), "w") as output:
+        with quickcodec.open(self.sandboxed("output.mov"), "w") as output:
             stream = output.add_stream("mp2")
             assert stream in output.streams.audio
             assert stream.time_base is None
@@ -181,7 +181,7 @@ class TestBasicAudioEncoding(TestCase):
     def test_transcode(self) -> None:
         path = self.sandboxed("audio_transcode.mov")
 
-        with deepcodec.open(path, "w") as output:
+        with quickcodec.open(path, "w") as output:
             output.metadata["title"] = "container"
             output.metadata["key"] = "value"
 
@@ -197,7 +197,7 @@ class TestBasicAudioEncoding(TestCase):
             stream.format = sample_fmt
             ctx.layout = channel_layout
 
-            with deepcodec.open(
+            with quickcodec.open(
                 fate_suite("audio-reference/chorusnoise_2ch_44kHz_s16.wav")
             ) as src:
                 for frame in src.decode(audio=0):
@@ -207,7 +207,7 @@ class TestBasicAudioEncoding(TestCase):
             for packet in stream.encode(None):
                 output.mux(packet)
 
-        with deepcodec.open(path) as container:
+        with quickcodec.open(path) as container:
             assert len(container.streams) == 1
             assert container.metadata.get("title") == "container"
             assert container.metadata.get("key") is None
@@ -222,11 +222,11 @@ class TestBasicAudioEncoding(TestCase):
 
 class TestSubtitleEncoding:
     def test_subtitle_muxing(self) -> None:
-        input_ = deepcodec.open(fate_suite("sub/MovText_capability_tester.mp4"))
+        input_ = quickcodec.open(fate_suite("sub/MovText_capability_tester.mp4"))
         in_stream = input_.streams.subtitles[0]
 
         output_bytes = io.BytesIO()
-        output = deepcodec.open(output_bytes, "w", format="mp4")
+        output = quickcodec.open(output_bytes, "w", format="mp4")
 
         out_stream = output.add_stream_from_template(in_stream)
 
@@ -245,7 +245,7 @@ class TestSubtitleEncoding:
 
 class TestEncodeStreamSemantics(TestCase):
     def test_stream_index(self) -> None:
-        with deepcodec.open(self.sandboxed("output.mov"), "w") as output:
+        with quickcodec.open(self.sandboxed("output.mov"), "w") as output:
             vstream = output.add_stream("mpeg4", 24)
             assert vstream in output.streams.video
             vstream.pix_fmt = "yuv420p"
@@ -283,7 +283,7 @@ class TestEncodeStreamSemantics(TestCase):
             assert apacket.stream_index == 1
 
     def test_stream_audio_resample(self) -> None:
-        with deepcodec.open(self.sandboxed("output.mov"), "w") as output:
+        with quickcodec.open(self.sandboxed("output.mov"), "w") as output:
             vstream = output.add_stream("mpeg4", 24)
             vstream.pix_fmt = "yuv420p"
             vstream.width = 320
@@ -314,7 +314,7 @@ class TestEncodeStreamSemantics(TestCase):
                 assert apacket.time_base == Fraction(1, 8000)
 
     def test_set_id_and_time_base(self) -> None:
-        with deepcodec.open(self.sandboxed("output.mov"), "w") as output:
+        with quickcodec.open(self.sandboxed("output.mov"), "w") as output:
             stream = output.add_stream("mp2")
             assert stream in output.streams.audio
 
@@ -342,7 +342,7 @@ def encode_file_with_max_b_frames(max_b_frames: int) -> io.BytesIO:
     # Create a video file that is entirely arbitrary, but with the passed
     # max_b_frames parameter.
     file = io.BytesIO()
-    container = deepcodec.open(file, mode="w", format="mp4")
+    container = quickcodec.open(file, mode="w", format="mp4")
     stream = container.add_stream("h264", rate=30)
     stream.width = 640
     stream.height = 480
@@ -355,7 +355,7 @@ def encode_file_with_max_b_frames(max_b_frames: int) -> io.BytesIO:
         # This appears to hit a complexity "sweet spot" that makes the codec
         # want to use B frames.
         array[:, :] = (i, 0, 255 - i)
-        frame = deepcodec.VideoFrame.from_ndarray(array, format="rgb24")
+        frame = quickcodec.VideoFrame.from_ndarray(array, format="rgb24")
         for packet in stream.encode(frame):
             container.mux(packet)
 
@@ -377,13 +377,13 @@ def max_b_frame_run_in_file(file: io.BytesIO) -> int:
 
     Returns: non-negative integer which is the maximum B frame run length.
     """
-    container = deepcodec.open(file, "r")
+    container = quickcodec.open(file, "r")
     stream = container.streams.video[0]
 
     max_b_frame_run = 0
     b_frame_run = 0
     for frame in container.decode(stream):
-        if frame.pict_type == deepcodec.video.frame.PictureType.B:
+        if frame.pict_type == quickcodec.video.frame.PictureType.B:
             b_frame_run += 1
         else:
             max_b_frame_run = max(max_b_frame_run, b_frame_run)
@@ -421,11 +421,11 @@ def encode_frames_with_qminmax(frames: list, shape: tuple, qminmax: tuple) -> in
     Returns: total length of the encoded bytes.
     """
 
-    if deepcodec.codec.Codec("h264", "w").name != "libx264":
+    if quickcodec.codec.Codec("h264", "w").name != "libx264":
         pytest.skip()
 
     file = io.BytesIO()
-    container = deepcodec.open(file, mode="w", format="mp4")
+    container = quickcodec.open(file, mode="w", format="mp4")
     stream = container.add_stream("h264", rate=30)
     stream.height, stream.width, _ = shape
     stream.pix_fmt = "yuv420p"
@@ -461,7 +461,7 @@ class TestQminQmaxEncoding(TestCase):
         shape = (480, 640, 3)
         for _ in range(10):
             frames.append(
-                deepcodec.VideoFrame.from_ndarray(
+                quickcodec.VideoFrame.from_ndarray(
                     np.random.randint(0, 256, shape, dtype=np.uint8), format="rgb24"
                 )
             )
@@ -490,7 +490,7 @@ class TestProfiles(TestCase):
 
         for codec_name, rate in codecs:
             print("Testing:", codec_name)
-            container = deepcodec.open(file, mode="w", format="mp4")
+            container = quickcodec.open(file, mode="w", format="mp4")
             stream = container.add_stream(codec_name, rate=rate)
             assert len(stream.profiles) >= 1  # check that we're testing something!
 

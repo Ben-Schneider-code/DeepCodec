@@ -1,6 +1,6 @@
 video_path = "/home/bsch/60min.mp4"
 thread = 4
-from deepcodec import VideoReader
+from quickcodec import VideoReader
 
 
 vr = VideoReader(video_path, num_threads=thread)

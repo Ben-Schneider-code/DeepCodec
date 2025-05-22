@@ -11,7 +11,7 @@ from unittest import TestCase as _Base
 
 import numpy as np
 
-from deepcodec.datasets import fate as fate_suite
+from quickcodec.datasets import fate as fate_suite
 
 try:
     import PIL  # noqa

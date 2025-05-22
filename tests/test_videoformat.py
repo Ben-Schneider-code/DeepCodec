@@ -1,4 +1,4 @@
-from deepcodec import VideoFormat
+from quickcodec import VideoFormat
 
 from .common import TestCase
 

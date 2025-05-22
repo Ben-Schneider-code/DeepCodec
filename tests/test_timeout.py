@@ -3,7 +3,7 @@ import time
 from http.server import BaseHTTPRequestHandler
 from socketserver import TCPServer
 
-import deepcodec
+import quickcodec
 
 from .common import TestCase, fate_suite
 
@@ -46,22 +46,22 @@ class TestTimeout(TestCase):
 
     def test_no_timeout(self) -> None:
         start = time.time()
-        deepcodec.open(f"http://localhost:{PORT}/mpeg2_field_encoding.ts")
+        quickcodec.open(f"http://localhost:{PORT}/mpeg2_field_encoding.ts")
         duration = time.time() - start
         assert duration > DELAY
 
     def test_open_timeout(self) -> None:
-        with self.assertRaises(deepcodec.ExitError):
+        with self.assertRaises(quickcodec.ExitError):
             start = time.time()
-            deepcodec.open(f"http://localhost:{PORT}/mpeg2_field_encoding.ts", timeout=TIMEOUT)
+            quickcodec.open(f"http://localhost:{PORT}/mpeg2_field_encoding.ts", timeout=TIMEOUT)
 
         duration = time.time() - start
         assert duration < DELAY
 
     def test_open_timeout_2(self) -> None:
-        with self.assertRaises(deepcodec.ExitError):
+        with self.assertRaises(quickcodec.ExitError):
             start = time.time()
-            deepcodec.open(
+            quickcodec.open(
                 f"http://localhost:{PORT}/mpeg2_field_encoding.ts",
                 timeout=(TIMEOUT, None),
             )

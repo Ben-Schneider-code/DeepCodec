@@ -1,13 +1,13 @@
 import errno
 from traceback import format_exception_only
 
-import deepcodec
+import quickcodec
 
 from .common import is_windows
 
 
 def test_stringify() -> None:
-    for cls in (deepcodec.ValueError, deepcodec.FileNotFoundError, deepcodec.DecoderNotFoundError):
+    for cls in (quickcodec.ValueError, quickcodec.FileNotFoundError, quickcodec.DecoderNotFoundError):
         e = cls(1, "foo")
         assert f"{e}" == "[Errno 1] foo"
         assert f"{e!r}" == f"{cls.__name__}(1, 'foo')"
@@ -16,7 +16,7 @@ def test_stringify() -> None:
             == f"av.error.{cls.__name__}: [Errno 1] foo\n"
         )
 
-    for cls in (deepcodec.ValueError, deepcodec.FileNotFoundError, deepcodec.DecoderNotFoundError):
+    for cls in (quickcodec.ValueError, quickcodec.FileNotFoundError, quickcodec.DecoderNotFoundError):
         e = cls(1, "foo", "bar.txt")
         assert f"{e}" == "[Errno 1] foo: 'bar.txt'"
         assert f"{e!r}" == f"{cls.__name__}(1, 'foo', 'bar.txt')"
@@ -27,18 +27,18 @@ def test_stringify() -> None:
 
 
 def test_bases() -> None:
-    assert issubclass(deepcodec.ValueError, ValueError)
-    assert issubclass(deepcodec.ValueError, deepcodec.FFmpegError)
+    assert issubclass(quickcodec.ValueError, ValueError)
+    assert issubclass(quickcodec.ValueError, quickcodec.FFmpegError)
 
-    assert issubclass(deepcodec.FileNotFoundError, FileNotFoundError)
-    assert issubclass(deepcodec.FileNotFoundError, OSError)
-    assert issubclass(deepcodec.FileNotFoundError, deepcodec.FFmpegError)
+    assert issubclass(quickcodec.FileNotFoundError, FileNotFoundError)
+    assert issubclass(quickcodec.FileNotFoundError, OSError)
+    assert issubclass(quickcodec.FileNotFoundError, quickcodec.FFmpegError)
 
 
 def test_filenotfound():
     """Catch using builtin class on Python 3.3"""
     try:
-        deepcodec.open("does not exist")
+        quickcodec.open("does not exist")
     except FileNotFoundError as e:
         assert e.errno == errno.ENOENT
         if is_windows:
@@ -58,8 +58,8 @@ def test_buffertoosmall() -> None:
 
     BUFFER_TOO_SMALL = 1397118274
     try:
-        deepcodec.error.err_check(-BUFFER_TOO_SMALL)
-    except deepcodec.error.BufferTooSmallError as e:
+        quickcodec.error.err_check(-BUFFER_TOO_SMALL)
+    except quickcodec.error.BufferTooSmallError as e:
         assert e.errno == BUFFER_TOO_SMALL
     else:
         assert False, "No exception raised!"

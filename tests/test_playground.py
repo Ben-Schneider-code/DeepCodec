@@ -13,7 +13,7 @@ max_num_threads = [1,2,4,8,16]
 results = []
 
 for thread in max_num_threads:
-        from deepcodec import VideoReader
+        from quickcodec import VideoReader
         vr = VideoReader(video_path, num_threads=thread)
         indices = list(range(0,len(vr), 25))
         s = time.time()
@@ -21,7 +21,7 @@ for thread in max_num_threads:
         results.append(b)
         e = time.time()
         print(b)
-        print(f"DeepCodec took {e-s} with {thread} threads")
+        print(f"quickcodec took {e-s} with {thread} threads")
         print(b.shape)
             
 baseline = results[0]

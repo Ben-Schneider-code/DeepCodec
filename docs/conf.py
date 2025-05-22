@@ -71,7 +71,7 @@ import errno
 import os
 
 import av
-from deepcodec.datasets import fate, fate as fate_suite, curated
+from quickcodec.datasets import fate, fate as fate_suite, curated
 
 from tests import common
 from tests.common import sandboxed as _sandboxed

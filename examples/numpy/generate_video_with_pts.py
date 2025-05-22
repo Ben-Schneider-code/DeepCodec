@@ -5,13 +5,13 @@ from fractions import Fraction
 
 import numpy as np
 
-import deepcodec
+import quickcodec
 
 (width, height) = (640, 360)
 total_frames = 20
 fps = 30
 
-container = deepcodec.open("generate_video_with_pts.mp4", mode="w")
+container = quickcodec.open("generate_video_with_pts.mp4", mode="w")
 
 stream = container.add_stream("mpeg4", rate=fps)  # alibi frame rate
 stream.width = width
@@ -53,7 +53,7 @@ for frame_i in range(total_frames):
         nice_color
     )
 
-    frame = deepcodec.VideoFrame.from_ndarray(the_canvas, format="rgb24")
+    frame = quickcodec.VideoFrame.from_ndarray(the_canvas, format="rgb24")
 
     # seconds -> counts of time_base
     frame.pts = int(round(my_pts / stream.codec_context.time_base))
@@ -70,7 +70,7 @@ for frame_i in range(total_frames):
 # this black frame will probably be shown for 1/fps time
 # at least, that is the analysis of ffprobe
 the_canvas[:] = 0
-frame = deepcodec.VideoFrame.from_ndarray(the_canvas, format="rgb24")
+frame = quickcodec.VideoFrame.from_ndarray(the_canvas, format="rgb24")
 frame.pts = int(round(my_pts / stream.codec_context.time_base))
 for packet in stream.encode(frame):
     container.mux(packet)

@@ -1,8 +1,8 @@
 import os
 import subprocess
 
-import deepcodec
-import deepcodec.datasets
+import quickcodec
+import quickcodec.datasets
 
 # We want an H.264 stream in the Annex B byte-stream format.
 # We haven't exposed bitstream filters yet, so we're gonna use the `ffmpeg` CLI.
@@ -12,7 +12,7 @@ if not os.path.exists(h264_path):
         [
             "ffmpeg",
             "-i",
-            deepcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4"),
+            quickcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4"),
             "-vcodec",
             "copy",
             "-an",
@@ -25,7 +25,7 @@ if not os.path.exists(h264_path):
 
 fh = open(h264_path, "rb")
 
-codec = deepcodec.CodecContext.create("h264", "r")
+codec = quickcodec.CodecContext.create("h264", "r")
 
 while True:
     chunk = fh.read(1 << 16)

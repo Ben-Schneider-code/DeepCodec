@@ -11,7 +11,7 @@ threads = [2,4,8]
 results = []
 
 
-from deepcodec import VideoReader, InterleavedVideoReader
+from quickcodec import VideoReader, InterleavedVideoReader
 
 vr = VideoReader(video_path, num_threads=threads[1])
 indices = list(range(0,len(vr), 2))

@@ -1,4 +1,4 @@
-DeepCodec
+quickcodec
 ====
 
 PyAV is a Pythonic binding for the [FFmpeg][ffmpeg] libraries. We aim to provide all of the power and control of the underlying library, but manage the gritty details as much as possible.

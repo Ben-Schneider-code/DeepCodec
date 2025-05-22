@@ -1,8 +1,8 @@
-import deepcodec
-import deepcodec.datasets
+import quickcodec
+import quickcodec.datasets
 
-content = deepcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4")
-with deepcodec.open(content) as container:
+content = quickcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4")
+with quickcodec.open(content) as container:
     # Signal that we only want to look at keyframes.
     stream = container.streams.video[0]
     stream.codec_context.skip_frame = "NONKEY"

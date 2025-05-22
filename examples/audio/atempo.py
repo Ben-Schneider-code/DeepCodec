@@ -1,14 +1,14 @@
-import deepcodec
+import quickcodec
 
-deepcodec.logging.set_level(deepcodec.logging.VERBOSE)
+quickcodec.logging.set_level(quickcodec.logging.VERBOSE)
 
-input_file = deepcodec.open("input.wav")
-output_file = deepcodec.open("output.wav", mode="w")
+input_file = quickcodec.open("input.wav")
+output_file = quickcodec.open("output.wav", mode="w")
 
 input_stream = input_file.streams.audio[0]
 output_stream = output_file.add_stream("pcm_s16le", rate=input_stream.rate)
 
-graph = deepcodec.filter.Graph()
+graph = quickcodec.filter.Graph()
 graph.link_nodes(
     graph.add_abuffer(template=input_stream),
     graph.add("atempo", "2.0"),
@@ -21,7 +21,7 @@ for frame in input_file.decode(input_stream):
         try:
             for packet in output_stream.encode(graph.pull()):
                 output_file.mux(packet)
-        except (deepcodec.BlockingIOError, deepcodec.EOFError):
+        except (quickcodec.BlockingIOError, quickcodec.EOFError):
             break
 
 # Flush the stream

@@ -1,9 +1,9 @@
-import deepcodec
+import quickcodec
 
-deepcodec.logging.set_level(deepcodec.logging.VERBOSE)
+quickcodec.logging.set_level(quickcodec.logging.VERBOSE)
 
-input_ = deepcodec.open("resources/webvtt.mkv")
-output = deepcodec.open("remuxed.vtt", "w")
+input_ = quickcodec.open("resources/webvtt.mkv")
+output = quickcodec.open("remuxed.vtt", "w")
 
 in_stream = input_.streams.subtitles[0]
 out_stream = output.add_stream_from_template(in_stream)
@@ -19,7 +19,7 @@ output.close()
 
 print("Remuxing done")
 
-with deepcodec.open("remuxed.vtt") as f:
+with quickcodec.open("remuxed.vtt") as f:
     for subset in f.decode(subtitles=0):
         for sub in subset:
             print(sub.ass)

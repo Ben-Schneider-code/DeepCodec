@@ -2,8 +2,8 @@ from fractions import Fraction
 
 import pytest
 
-import deepcodec
-from deepcodec import AudioFrame, AudioResampler
+import quickcodec
+from quickcodec import AudioFrame, AudioResampler
 
 
 def test_flush_immediately() -> None:
@@ -72,7 +72,7 @@ def test_matching_passthrough() -> None:
 
 
 def test_pts_assertion_same_rate() -> None:
-    deepcodec.logging.set_level(deepcodec.logging.VERBOSE)
+    quickcodec.logging.set_level(quickcodec.logging.VERBOSE)
     resampler = AudioResampler("s16", "mono")
 
     # resample one frame
@@ -116,7 +116,7 @@ def test_pts_assertion_same_rate() -> None:
     # flush
     oframes = resampler.resample(None)
     assert len(oframes) == 0
-    deepcodec.logging.set_level(None)
+    quickcodec.logging.set_level(None)
 
 
 def test_pts_assertion_new_rate_up() -> None:

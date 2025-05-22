@@ -1,5 +1,5 @@
-from deepcodec import ContainerFormat
-from deepcodec.option import Option, OptionType
+from quickcodec import ContainerFormat
+from quickcodec.option import Option, OptionType
 
 
 class TestOptions:

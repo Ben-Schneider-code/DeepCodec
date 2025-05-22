@@ -3,7 +3,7 @@ from fractions import Fraction
 
 import pytest
 
-import deepcodec
+import quickcodec
 
 from .common import fate_suite
 
@@ -18,7 +18,7 @@ class TestStreams:
 
     def test_stream_tuples(self) -> None:
         for fate_name in ("h264/interlaced_crop.mp4",):
-            container = deepcodec.open(fate_suite(fate_name))
+            container = quickcodec.open(fate_suite(fate_name))
 
             video_streams = tuple([s for s in container.streams if s.type == "video"])
             assert video_streams == container.streams.video
@@ -27,30 +27,30 @@ class TestStreams:
             assert audio_streams == container.streams.audio
 
     def test_loudnorm(self) -> None:
-        container = deepcodec.open(
+        container = quickcodec.open(
             fate_suite("amv/MTV_high_res_320x240_sample_Penguin_Joke_MTV_from_WMV.amv")
         )
         audio = container.streams.audio[0]
-        stats = deepcodec.filter.loudnorm.stats("i=-24.0:lra=7.0:tp=-2.0", audio)
+        stats = quickcodec.filter.loudnorm.stats("i=-24.0:lra=7.0:tp=-2.0", audio)
 
         assert isinstance(stats, bytes) and len(stats) > 30
         assert b"inf" not in stats
         assert b'"input_i"' in stats
 
     def test_selection(self) -> None:
-        container = deepcodec.open(
+        container = quickcodec.open(
             fate_suite("amv/MTV_high_res_320x240_sample_Penguin_Joke_MTV_from_WMV.amv")
         )
         video = container.streams.video[0]
 
-        video.thread_type = deepcodec.codec.context.ThreadType.AUTO
-        assert video.thread_type == deepcodec.codec.context.ThreadType.AUTO
+        video.thread_type = quickcodec.codec.context.ThreadType.AUTO
+        assert video.thread_type == quickcodec.codec.context.ThreadType.AUTO
 
         video.thread_type = 0x03
-        assert video.thread_type == deepcodec.codec.context.ThreadType.AUTO
+        assert video.thread_type == quickcodec.codec.context.ThreadType.AUTO
 
         video.thread_type = "AUTO"
-        assert video.thread_type == deepcodec.codec.context.ThreadType.AUTO
+        assert video.thread_type == quickcodec.codec.context.ThreadType.AUTO
 
         audio = container.streams.audio[0]
 
@@ -60,19 +60,19 @@ class TestStreams:
         assert video == container.streams.best("video")
         assert audio == container.streams.best("audio")
 
-        container = deepcodec.open(fate_suite("sub/MovText_capability_tester.mp4"))
+        container = quickcodec.open(fate_suite("sub/MovText_capability_tester.mp4"))
         subtitle = container.streams.subtitles[0]
         assert subtitle == container.streams.best("subtitle")
 
-        container = deepcodec.open(fate_suite("mxf/track_01_v02.mxf"))
+        container = quickcodec.open(fate_suite("mxf/track_01_v02.mxf"))
         data = container.streams.data[0]
         assert data == container.streams.best("data")
 
     def test_printing_video_stream(self) -> None:
-        input_ = deepcodec.open(
+        input_ = quickcodec.open(
             fate_suite("amv/MTV_high_res_320x240_sample_Penguin_Joke_MTV_from_WMV.amv")
         )
-        container = deepcodec.open("out.mkv", "w")
+        container = quickcodec.open("out.mkv", "w")
 
         video_stream = container.add_stream("h264", rate=30)
         encoder = video_stream.codec.name
@@ -93,9 +93,9 @@ class TestStreams:
         input_.close()
 
     def test_printing_video_stream2(self) -> None:
-        input_ = deepcodec.open(fate_suite("h264/interlaced_crop.mp4"))
+        input_ = quickcodec.open(fate_suite("h264/interlaced_crop.mp4"))
         input_stream = input_.streams.video[0]
-        container = deepcodec.open("out.mkv", "w")
+        container = quickcodec.open("out.mkv", "w")
 
         video_stream = container.add_stream_from_template(input_stream)
         encoder = video_stream.codec.name
@@ -113,19 +113,19 @@ class TestStreams:
 
     def test_data_stream(self) -> None:
         # First test writing and reading a simple data stream
-        container1 = deepcodec.open("data.ts", "w")
+        container1 = quickcodec.open("data.ts", "w")
         data_stream = container1.add_data_stream()
 
         test_data = [b"test data 1", b"test data 2", b"test data 3"]
         for i, data_ in enumerate(test_data):
-            packet = deepcodec.Packet(data_)
+            packet = quickcodec.Packet(data_)
             packet.pts = i
             packet.stream = data_stream
             container1.mux(packet)
         container1.close()
 
         # Test reading back the data stream
-        container = deepcodec.open("data.ts")
+        container = quickcodec.open("data.ts")
 
         # Test best stream selection
         data = container.streams.best("data")

@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import pytest
 
-import deepcodec
-from deepcodec import Packet
-from deepcodec.bitstream import BitStreamFilterContext, bitstream_filters_available
+import quickcodec
+from quickcodec import Packet
+from quickcodec.bitstream import BitStreamFilterContext, bitstream_filters_available
 
 from .common import TestCase, fate_suite
 
@@ -57,7 +57,7 @@ def test_filter_setts() -> None:
 
 
 def test_filter_h264_mp4toannexb() -> None:
-    with deepcodec.open(fate_suite("h264/interlaced_crop.mp4"), "r") as container:
+    with quickcodec.open(fate_suite("h264/interlaced_crop.mp4"), "r") as container:
         stream = container.streams.video[0]
         ctx = BitStreamFilterContext("h264_mp4toannexb", stream)
 
@@ -73,7 +73,7 @@ def test_filter_h264_mp4toannexb() -> None:
 
 
 def test_filter_output_parameters() -> None:
-    with deepcodec.open(fate_suite("h264/interlaced_crop.mp4"), "r") as container:
+    with quickcodec.open(fate_suite("h264/interlaced_crop.mp4"), "r") as container:
         stream = container.streams.video[0]
 
         assert not is_annexb(stream.codec_context.extradata)
@@ -86,7 +86,7 @@ def test_filter_output_parameters() -> None:
 
 
 def test_filter_flush() -> None:
-    with deepcodec.open(fate_suite("h264/interlaced_crop.mp4"), "r") as container:
+    with quickcodec.open(fate_suite("h264/interlaced_crop.mp4"), "r") as container:
         stream = container.streams.video[0]
         ctx = BitStreamFilterContext("h264_mp4toannexb", stream)
 

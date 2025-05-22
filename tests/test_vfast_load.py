@@ -1,4 +1,4 @@
-from deepcodec.vfast import vfast_load, get_stats
+from quickcodec.vfast import vfast_load, get_stats
 import numpy as np
 import time
 

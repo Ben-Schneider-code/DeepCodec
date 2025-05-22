@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-import deepcodec
+import quickcodec
 
 from .common import TestCase, fate_png, fate_suite, has_pillow, run_in_sandbox
 from .test_encode import assert_rgb_rotate, write_rgb_rotate
@@ -112,7 +112,7 @@ def read(
 ) -> None:
     wrapped = MethodLogger(fh)
 
-    with deepcodec.open(wrapped, "r") as container:
+    with quickcodec.open(wrapped, "r") as container:
         assert container.format.name == "mpegts"
         assert container.format.long_name == "MPEG-TS (MPEG-2 Transport Stream)"
         assert len(container.streams) == 1
@@ -129,7 +129,7 @@ def read(
 def write(fh: io.BufferedWriter | BytesIO) -> None:
     wrapped = MethodLogger(fh)
 
-    with deepcodec.open(wrapped, "w", "mp4") as container:
+    with quickcodec.open(wrapped, "w", "mp4") as container:
         write_rgb_rotate(container)
 
     # Check method calls.
@@ -173,8 +173,8 @@ class CustomIOLogger:
 
 class TestPythonIO(TestCase):
     def test_basic_errors(self) -> None:
-        self.assertRaises(Exception, deepcodec.open, None)
-        self.assertRaises(Exception, deepcodec.open, None, "w")
+        self.assertRaises(Exception, quickcodec.open, None)
+        self.assertRaises(Exception, quickcodec.open, None, "w")
 
     def test_reading_from_buffer(self) -> None:
         with open(fate_suite("mpeg2/mpeg2_field_encoding.ts"), "rb") as fh:
@@ -211,14 +211,14 @@ class TestPythonIO(TestCase):
         # Check contents.
         assert buf.tell()
         buf.seek(0)
-        with deepcodec.open(buf, "r") as container:
+        with quickcodec.open(buf, "r") as container:
             assert_rgb_rotate(self, container)
 
     def test_writing_to_buffer_broken(self) -> None:
         buf = BrokenBuffer()
 
         with pytest.raises(OSError):
-            with deepcodec.open(buf, "w", "mp4") as container:
+            with quickcodec.open(buf, "w", "mp4") as container:
                 write_rgb_rotate(container)
 
                 # break I/O
@@ -227,7 +227,7 @@ class TestPythonIO(TestCase):
     def test_writing_to_buffer_broken_with_close(self) -> None:
         buf = BrokenBuffer()
 
-        with deepcodec.open(buf, "w", "mp4") as container:
+        with quickcodec.open(buf, "w", "mp4") as container:
             write_rgb_rotate(container)
 
             # break I/O
@@ -246,7 +246,7 @@ class TestPythonIO(TestCase):
 
         # Write a DASH package using the custom IO. Prefix the name with CUSTOM_IO_PROTOCOL to
         # avoid temporary file and renaming.
-        with deepcodec.open(
+        with quickcodec.open(
             CUSTOM_IO_PROTOCOL + output_filename, "w", io_open=wrapped_custom_io
         ) as container:
             write_rgb_rotate(container)
@@ -270,7 +270,7 @@ class TestPythonIO(TestCase):
 
         # Check contents.
         # Note that the dash demuxer doesn't support custom I/O.
-        with deepcodec.open(output_filename, "r") as container:
+        with quickcodec.open(output_filename, "r") as container:
             assert_rgb_rotate(self, container, is_dash=True)
 
     def test_writing_to_custom_io_image2(self) -> None:
@@ -283,7 +283,7 @@ class TestPythonIO(TestCase):
         wrapped_custom_io = CustomIOLogger()
 
         image = Image.open(fate_png())
-        input_frame = deepcodec.VideoFrame.from_image(image)
+        input_frame = quickcodec.VideoFrame.from_image(image)
 
         frame_count = 10
         sequence_filename = self.sandboxed("test%d.png")
@@ -291,7 +291,7 @@ class TestPythonIO(TestCase):
         height = 90
 
         # Write a PNG image sequence using the custom IO
-        with deepcodec.open(
+        with quickcodec.open(
             sequence_filename, "w", "image2", io_open=wrapped_custom_io
         ) as output:
             stream = output.add_stream("png")
@@ -320,9 +320,9 @@ class TestPythonIO(TestCase):
         assert all_closed
 
         # Check contents.
-        with deepcodec.open(sequence_filename, "r", "image2") as container:
+        with quickcodec.open(sequence_filename, "r", "image2") as container:
             assert len(container.streams) == 1
-            assert isinstance(container.streams[0], deepcodec.video.stream.VideoStream)
+            assert isinstance(container.streams[0], quickcodec.video.stream.VideoStream)
 
             stream = container.streams[0]
             assert stream.duration == frame_count
@@ -341,7 +341,7 @@ class TestPythonIO(TestCase):
             write(fh)
 
         # Check contents.
-        with deepcodec.open(path) as container:
+        with quickcodec.open(path) as container:
             assert_rgb_rotate(self, container)
 
     def test_writing_to_pipe_readonly(self) -> None:
@@ -355,7 +355,7 @@ class TestPythonIO(TestCase):
             write(buf)
 
     def test_writing_to_pipe_writeonly(self) -> None:
-        deepcodec.logging.set_level(deepcodec.logging.VERBOSE)
+        quickcodec.logging.set_level(quickcodec.logging.VERBOSE)
 
         buf = WriteOnlyPipe()
         with pytest.raises(
@@ -363,4 +363,4 @@ class TestPythonIO(TestCase):
         ):
             write(buf)
 
-        deepcodec.logging.set_level(None)
+        quickcodec.logging.set_level(None)

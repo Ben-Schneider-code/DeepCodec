@@ -2,7 +2,7 @@
 requires = ["setuptools>61", "cython>=3.1.0a1,<4", "numpy>=1.21.0"]
 
 [project]
-name = "deepcodec"
+name = "quickcodec"
 description = "Pythonic bindings for FFmpeg's libraries."
 readme = "README.md"
 license = "BSD-3-Clause"
@@ -36,13 +36,13 @@ dynamic = ["version"]
 zip-safe = false
 
 [tool.setuptools.dynamic]
-version = {attr = "deepcodec.about.__version__"}
+version = {attr = "quickcodec.about.__version__"}
 
 [project.scripts]
-"deepcodec" = "deepcodec.__main__:mp_entrypoint"
-"deepcodec_interleaved" = "deepcodec.__main__:mp_interleaved_entrypoint"
+"quickcodec" = "quickcodec.__main__:mp_entrypoint"
+"quickcodec_interleaved" = "quickcodec.__main__:mp_interleaved_entrypoint"
 
 [tool.isort]
 profile = "black"
-known_first_party = ["deepcodec"]
-skip = ["deepcodec/__init__.py"]
+known_first_party = ["quickcodec"]
+skip = ["quickcodec/__init__.py"]

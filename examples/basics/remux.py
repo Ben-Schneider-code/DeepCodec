@@ -1,10 +1,10 @@
-import deepcodec
-import deepcodec.datasets
+import quickcodec
+import quickcodec.datasets
 
-deepcodec.logging.set_level(deepcodec.logging.VERBOSE)
+quickcodec.logging.set_level(quickcodec.logging.VERBOSE)
 
-input_ = deepcodec.open(deepcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4"))
-output = deepcodec.open("remuxed.mkv", "w")
+input_ = quickcodec.open(quickcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4"))
+output = quickcodec.open("remuxed.mkv", "w")
 
 # Make an output stream using the input as a template. This copies the stream
 # setup from one to the other.

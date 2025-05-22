@@ -1,16 +1,16 @@
 from fractions import Fraction
 
-import deepcodec
+import quickcodec
 
 from .common import TestCase, fate_suite
 
 
 class TestAudioFifo(TestCase):
     def test_data(self) -> None:
-        container = deepcodec.open(fate_suite("audio-reference/chorusnoise_2ch_44kHz_s16.wav"))
+        container = quickcodec.open(fate_suite("audio-reference/chorusnoise_2ch_44kHz_s16.wav"))
         stream = container.streams.audio[0]
 
-        fifo = deepcodec.AudioFifo()
+        fifo = quickcodec.AudioFifo()
 
         input_ = []
         output = []
@@ -31,13 +31,13 @@ class TestAudioFifo(TestCase):
         assert input_bytes[:min_len] == output_bytes[:min_len]
 
     def test_pts_simple(self) -> None:
-        fifo = deepcodec.AudioFifo()
+        fifo = quickcodec.AudioFifo()
 
         assert str(fifo).startswith(
             "<av.AudioFifo uninitialized, use fifo.write(frame), at 0x"
         )
 
-        iframe = deepcodec.AudioFrame(samples=1024)
+        iframe = quickcodec.AudioFrame(samples=1024)
         iframe.pts = 0
         iframe.sample_rate = 48000
         iframe.time_base = Fraction("1/48000")
@@ -69,9 +69,9 @@ class TestAudioFifo(TestCase):
         self.assertRaises(ValueError, fifo.write, iframe)
 
     def test_pts_complex(self) -> None:
-        fifo = deepcodec.AudioFifo()
+        fifo = quickcodec.AudioFifo()
 
-        iframe = deepcodec.AudioFrame(samples=1024)
+        iframe = quickcodec.AudioFrame(samples=1024)
         iframe.pts = 0
         iframe.sample_rate = 48000
         iframe.time_base = Fraction("1/96000")
@@ -86,9 +86,9 @@ class TestAudioFifo(TestCase):
         assert fifo.pts_per_sample == 2.0
 
     def test_missing_sample_rate(self) -> None:
-        fifo = deepcodec.AudioFifo()
+        fifo = quickcodec.AudioFifo()
 
-        iframe = deepcodec.AudioFrame(samples=1024)
+        iframe = quickcodec.AudioFrame(samples=1024)
         iframe.pts = 0
         iframe.time_base = Fraction("1/48000")
 
@@ -102,9 +102,9 @@ class TestAudioFifo(TestCase):
         assert oframe.time_base == iframe.time_base
 
     def test_missing_time_base(self) -> None:
-        fifo = deepcodec.AudioFifo()
+        fifo = quickcodec.AudioFifo()
 
-        iframe = deepcodec.AudioFrame(samples=1024)
+        iframe = quickcodec.AudioFrame(samples=1024)
         iframe.pts = 0
         iframe.sample_rate = 48000
 

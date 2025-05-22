@@ -1,9 +1,9 @@
 import os
 import time
 
-import deepcodec
-import deepcodec.datasets
-from deepcodec.codec.hwaccel import HWAccel, hwdevices_available
+import quickcodec
+import quickcodec.datasets
+from quickcodec.codec.hwaccel import HWAccel, hwdevices_available
 
 # What accelerator to use.
 # Recommendations:
@@ -26,7 +26,7 @@ HW_DEVICE = os.environ["HW_DEVICE"] if "HW_DEVICE" in os.environ else None
 if "TEST_FILE_PATH" in os.environ:
     test_file_path = os.environ["TEST_FILE_PATH"]
 else:
-    test_file_path = deepcodec.datasets.curated(
+    test_file_path = quickcodec.datasets.curated(
         "pexels/time-lapse-video-of-night-sky-857195.mp4"
     )
 
@@ -38,7 +38,7 @@ assert HW_DEVICE in hwdevices_available(), f"{HW_DEVICE} not available."
 
 print("Decoding in software (auto threading)...")
 
-container = deepcodec.open(test_file_path)
+container = quickcodec.open(test_file_path)
 
 container.streams.video[0].thread_type = "AUTO"
 
@@ -61,7 +61,7 @@ print(
 hwaccel = HWAccel(device_type=HW_DEVICE, allow_software_fallback=False)
 
 # Note the additional argument here.
-container = deepcodec.open(test_file_path, hwaccel=hwaccel)
+container = quickcodec.open(test_file_path, hwaccel=hwaccel)
 
 start_time = time.time()
 frame_count = 0

@@ -1,11 +1,11 @@
-import deepcodec
-from deepcodec.video.reformatter import ColorRange, Colorspace
+import quickcodec
+from quickcodec.video.reformatter import ColorRange, Colorspace
 
 from .common import fate_suite
 
 
 def test_penguin_joke() -> None:
-    container = deepcodec.open(
+    container = quickcodec.open(
         fate_suite("amv/MTV_high_res_320x240_sample_Penguin_Joke_MTV_from_WMV.amv")
     )
     stream = container.streams.video[0]
@@ -26,12 +26,12 @@ def test_penguin_joke() -> None:
 
 
 def test_sky_timelapse() -> None:
-    container = deepcodec.open(
-        deepcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4")
+    container = quickcodec.open(
+        quickcodec.datasets.curated("pexels/time-lapse-video-of-night-sky-857195.mp4")
     )
     stream = container.streams.video[0]
 
-    assert stream.disposition == deepcodec.stream.Disposition.default
+    assert stream.disposition == quickcodec.stream.Disposition.default
 
     assert stream.codec_context.color_range == 1
     assert stream.codec_context.color_range == ColorRange.MPEG

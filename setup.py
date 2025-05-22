@@ -177,7 +177,7 @@ else:
         "library_dirs": [],
     }
 
-IMPORT_NAME = "deepcodec"
+IMPORT_NAME = "quickcodec"
 
 loudnorm_extension = Extension(
     f"{IMPORT_NAME}.filter.loudnorm",
